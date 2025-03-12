@@ -8,6 +8,11 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { Student } from './student/student.entity';
 import { Teacher } from './teacher/teacher.entity';
 import { Class } from './class/class.entity';
+import { AppController } from './app.controller';  // Agrega esta línea
+import { AppService } from './app.service';  // Agrega esta línea
+import { StudentModule } from './student/student.module';  // Agrega si no está
+import { TeacherModule } from './teacher/teacher.module';  // Agrega si no está
+import { ClassModule } from './class/class.module';  // Agrega si no está
 
 @Module({
   imports: [
@@ -28,8 +33,11 @@ import { Class } from './class/class.entity';
     }),
     ScheduleModule,
     AttendanceModule,
+    StudentModule,  // Asegúrate de que todos los módulos estén importados
+    TeacherModule,
+    ClassModule,
   ],
-  controllers: [],
-  providers: [],
+  controllers: [AppController],  // Agrega esta línea
+  providers: [AppService],       // Agrega esta línea
 })
 export class AppModule {}
