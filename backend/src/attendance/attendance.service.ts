@@ -1,26 +1,20 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { AttendanceRepository } from './attendance.repository';
 import { Attendance } from './attendance.entity';
-import { AttendanceDto } from './dto/attendance.dto';
 
 @Injectable()
 export class AttendanceService {
   constructor(
     @InjectRepository(Attendance)
-    private readonly attendanceRepository: Repository<Attendance>,
+    private readonly attendanceRepository: AttendanceRepository,
   ) {}
 
-  markAttendance(attendanceDto: AttendanceDto) {
-    const attendance = this.attendanceRepository.create(attendanceDto);
-    return this.attendanceRepository.save(attendance);
+  async markAttendance(attendance: Attendance) {
+    return await this.attendanceRepository.save(attendance);
   }
 
-  getAllAttendance() {
-    return this.attendanceRepository.find();
-  }
-
-  getAttendanceById(id: number) {
-    return this.attendanceRepository.findOneBy({ id });
+  async getAllAttendance() {
+    return await this.attendanceRepository.find();
   }
 }

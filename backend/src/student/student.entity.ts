@@ -1,13 +1,13 @@
 import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 
 @Entity()
-export class Attendance {
+export class Student {
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column()
-  scheduleId: number;
+  name: string;
 
-  @Column()
-  attended: boolean;
+  @Column({ unique: true })
+  email: string;
 }

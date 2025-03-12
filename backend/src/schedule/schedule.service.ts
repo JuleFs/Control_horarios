@@ -1,30 +1,28 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { ScheduleRepository } from './schedule.repository';
 import { Schedule } from './schedule.entity';
-import { ScheduleDto } from './dto/schedule.dto';
 
 @Injectable()
 export class ScheduleService {
   constructor(
     @InjectRepository(Schedule)
-    private readonly scheduleRepository: Repository<Schedule>,
+    private readonly scheduleRepository: ScheduleRepository,
   ) {}
 
-  create(scheduleDto: ScheduleDto) {
-    const schedule = this.scheduleRepository.create(scheduleDto);
-    return this.scheduleRepository.save(schedule);
+  async create(schedule: Schedule) {
+    return await this.scheduleRepository.save(schedule);
   }
 
-  findAll() {
-    return this.scheduleRepository.find();
+  async findAll() {
+    return await this.scheduleRepository.find();
   }
 
-  findOne(id: number) {
-    return this.scheduleRepository.findOneBy({ id });
+  async findOne(id: number) {
+    return await this.scheduleRepository.findOne({ where: { id } });
   }
 
-  update(id: number, scheduleDto: ScheduleDto) {
-    return this.scheduleRepository.update(id, scheduleDto);
+  async update(id: number, schedule: Schedule) {
+    return await this.scheduleRepository.update(id, schedule);
   }
 }
