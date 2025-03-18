@@ -1,49 +1,89 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
-import { Container, Nav, Navbar } from 'react-bootstrap';
-import 'bootstrap/dist/css/bootstrap.min.css';
-
-// Importación de páginas
-import Home from './pages/Home';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { Container } from 'react-bootstrap';
+import { AuthProvider } from './context/AuthContext';
+import ProtectedRoute from './components/ProtectedRoute';
+import Navigation from './components/Navigation';
+import Login from './pages/Login';
 import Students from './pages/Students';
-import Teachers from './pages/Teachers.js';
-import Classes from './pages/Classes.js';
-import Schedules from './pages/Schedules.js';
-import Attendance from './pages/Attendance.js';
+import Teachers from './pages/Teachers';
+import Classes from './pages/Classes';
+import Schedules from './pages/Schedules';
+import Attendance from './pages/Attendance';
+import Unauthorized from './pages/Unauthorized';
+import Users from './pages/Users';
+import './App.css';
 
 function App() {
   return (
-    <Router>
-      <div className="App">
-        <Navbar bg="dark" variant="dark" expand="lg">
-          <Container>
-            <Navbar.Brand as={Link} to="/">Sistema de Gestión Escolar</Navbar.Brand>
-            <Navbar.Toggle aria-controls="basic-navbar-nav" />
-            <Navbar.Collapse id="basic-navbar-nav">
-              <Nav className="me-auto">
-                <Nav.Link as={Link} to="/">Inicio</Nav.Link>
-                <Nav.Link as={Link} to="/students">Estudiantes</Nav.Link>
-                <Nav.Link as={Link} to="/teachers">Profesores</Nav.Link>
-                <Nav.Link as={Link} to="/classes">Clases</Nav.Link>
-                <Nav.Link as={Link} to="/schedules">Horarios</Nav.Link>
-                <Nav.Link as={Link} to="/attendance">Asistencia</Nav.Link>
-              </Nav>
-            </Navbar.Collapse>
-          </Container>
-        </Navbar>
+    <AuthProvider>
+      <Router>
+        <div>
+          <Navigation />
+          <Container className="mt-4">
+            <Routes>
+              <Route path="/login" element={<Login />} />
+              <Route path="/unauthorized" element={<Unauthorized />} />
+              
+              {/* Rutas protegidas para administradores */}
+              <Route
+                path="/users"
+                element={
+                  <ProtectedRoute requiredRole="admin">
+                    <Users />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/students"
+                element={
+                  <ProtectedRoute requiredRole="admin">
+                    <Students />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/teachers"
+                element={
+                  <ProtectedRoute requiredRole="admin">
+                    <Teachers />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/classes"
+                element={
+                  <ProtectedRoute requiredRole="admin">
+                    <Classes />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/schedules"
+                element={
+                  <ProtectedRoute requiredRole="admin">
+                    <Schedules />
+                  </ProtectedRoute>
+                }
+              />
 
-        <Container className="mt-4">
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/students" element={<Students />} />
-            <Route path="/teachers" element={<Teachers />} />
-            <Route path="/classes" element={<Classes />} />
-            <Route path="/schedules" element={<Schedules />} />
-            <Route path="/attendance" element={<Attendance />} />
-          </Routes>
-        </Container>
-      </div>
-    </Router>
+              {/* Ruta de asistencia accesible para todos los usuarios autenticados */}
+              <Route
+                path="/attendance"
+                element={
+                  <ProtectedRoute requiredRole="student">
+                    <Attendance />
+                  </ProtectedRoute>
+                }
+              />
+
+              {/* Redirección por defecto */}
+              <Route path="/" element={<Navigate to="/login" />} />
+            </Routes>
+          </Container>
+        </div>
+      </Router>
+    </AuthProvider>
   );
 }
 
