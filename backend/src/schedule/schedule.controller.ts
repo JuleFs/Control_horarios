@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Put } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Put, Delete } from '@nestjs/common';
 import { ScheduleService } from './schedule.service';
 import { Schedule } from './schedule.entity';
 
@@ -24,5 +24,10 @@ export class ScheduleController {
   @Put(':id')
   update(@Param('id') id: string, @Body() schedule: Schedule) {
     return this.scheduleService.update(+id, schedule);
+  }
+
+  @Delete(':id')
+  remove(@Param('id') id: string) {
+    return this.scheduleService.remove(+id);
   }
 }

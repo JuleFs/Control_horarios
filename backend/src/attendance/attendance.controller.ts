@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body } from '@nestjs/common';
+import { Controller, Get, Post, Body, Put, Delete, Param } from '@nestjs/common';
 import { AttendanceService } from './attendance.service';
 import { Attendance } from './attendance.entity';
 
@@ -14,5 +14,20 @@ export class AttendanceController {
   @Get()
   getAttendance() {
     return this.attendanceService.getAllAttendance();
+  }
+
+  @Get(':id')
+  findOne(@Param('id') id: string) {
+    return this.attendanceService.findOne(+id);
+  }
+
+  @Put(':id')
+  update(@Param('id') id: string, @Body() attendance: Attendance) {
+    return this.attendanceService.update(+id, attendance);
+  }
+
+  @Delete(':id')
+  remove(@Param('id') id: string) {
+    return this.attendanceService.remove(+id);
   }
 }
