@@ -8,14 +8,25 @@ import { User } from '../entities/user.entity';
 import { JwtStrategy } from './jwt.strategy';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from './jwt-auth.guard';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([User]),
-    PassportModule,
-    JwtModule.register({
-      secret: 'tu_clave_secreta', // Deberías mover esto a variables de entorno
-      signOptions: { expiresIn: '24h' },
+    PassportModule.register({ defaultStrategy: 'jwt' }),
+    JwtModule.registerAsync({
+      imports: [ConfigModule],
+      useFactory: async (configService: ConfigService) => {
+        const secret = configService.get<string>('JWT_SECRET');
+        if (!secret) {
+          throw new Error('JWT_SECRET no está definida en las variables de entorno');
+        }
+        return {
+          secret,
+          signOptions: { expiresIn: '24h' },
+        };
+      },
+      inject: [ConfigService],
     }),
   ],
   providers: [
@@ -27,6 +38,6 @@ import { JwtAuthGuard } from './jwt-auth.guard';
     },
   ],
   controllers: [AuthController],
-  exports: [AuthService],
+  exports: [AuthService, JwtStrategy, PassportModule],
 })
 export class AuthModule {} 

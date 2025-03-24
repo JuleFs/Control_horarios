@@ -31,7 +31,13 @@ import { User } from './entities/user.entity';
         password: configService.get('DB_PASSWORD', ''),
         database: configService.get('DB_NAME', 'horarios'),
         entities: [Schedule, Attendance, Student, Teacher, Class, User],
-        synchronize: true,
+        synchronize: configService.get('DB_SYNC', true),
+        logging: true,
+        charset: 'utf8mb4',
+        collation: 'utf8mb4_unicode_ci',
+        extra: {
+          authPlugin: 'mysql_native_password'
+        }
       }),
       inject: [ConfigService],
     }),

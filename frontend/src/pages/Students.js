@@ -7,7 +7,11 @@ function Students() {
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [newStudent, setNewStudent] = useState({ name: '', email: '' });
+  const [newStudent, setNewStudent] = useState({ 
+    name: '', 
+    email: '', 
+    phone: '' 
+  });
   const [message, setMessage] = useState(null);
   const [editingStudent, setEditingStudent] = useState(null);
   const [showEditModal, setShowEditModal] = useState(false);
@@ -42,7 +46,7 @@ function Students() {
     e.preventDefault();
     try {
       await API.createStudent(newStudent);
-      setNewStudent({ name: '', email: '' });
+      setNewStudent({ name: '', email: '', phone: '' });
       setMessage({ type: 'success', text: 'Estudiante creado con éxito' });
       fetchStudents();
     } catch (err) {
@@ -119,6 +123,16 @@ function Students() {
                     required
                   />
                 </Form.Group>
+                <Form.Group className="mb-3">
+                  <Form.Label>Teléfono</Form.Label>
+                  <Form.Control
+                    type="tel"
+                    name="phone"
+                    value={newStudent.phone}
+                    onChange={handleInputChange}
+                    required
+                  />
+                </Form.Group>
                 <Button variant="primary" type="submit">Registrar</Button>
               </Form>
             </Card.Body>
@@ -139,6 +153,7 @@ function Students() {
                       <th>ID</th>
                       <th>Nombre</th>
                       <th>Email</th>
+                      <th>Teléfono</th>
                       <th>Acciones</th>
                     </tr>
                   </thead>
@@ -149,6 +164,7 @@ function Students() {
                           <td>{student.id}</td>
                           <td>{student.name}</td>
                           <td>{student.email}</td>
+                          <td>{student.phone}</td>
                           <td>
                             <Button
                               variant="warning"
@@ -170,7 +186,7 @@ function Students() {
                       ))
                     ) : (
                       <tr>
-                        <td colSpan="4" className="text-center">No hay estudiantes registrados</td>
+                        <td colSpan="5" className="text-center">No hay estudiantes registrados</td>
                       </tr>
                     )}
                   </tbody>
@@ -204,6 +220,16 @@ function Students() {
                 type="email"
                 name="email"
                 value={editingStudent?.email || ''}
+                onChange={handleInputChange}
+                required
+              />
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>Teléfono</Form.Label>
+              <Form.Control
+                type="tel"
+                name="phone"
+                value={editingStudent?.phone || ''}
                 onChange={handleInputChange}
                 required
               />

@@ -1,33 +1,55 @@
-import { Controller, Get, Post, Body, Put, Delete, Param } from '@nestjs/common';
+import { Controller, Get, Post, Body, Put, Delete, Param, UseGuards, HttpException, HttpStatus } from '@nestjs/common';
 import { StudentService } from './student.service';
-import { Student } from './student.entity';
+import { Student } from '../entities/student.entity';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
 @Controller('students')
+@UseGuards(JwtAuthGuard)
 export class StudentController {
   constructor(private readonly studentService: StudentService) {}
 
   @Post()
-  create(@Body() student: Student) {
-    return this.studentService.create(student);
+  async create(@Body() student: Student) {
+    try {
+      return await this.studentService.create(student);
+    } catch (error) {
+      throw new HttpException('Error al crear estudiante', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 
   @Get()
-  findAll() {
-    return this.studentService.findAll();
+  async findAll() {
+    try {
+      return await this.studentService.findAll();
+    } catch (error) {
+      throw new HttpException('Error al obtener estudiantes', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.studentService.findOne(+id);
+  async findOne(@Param('id') id: string) {
+    try {
+      return await this.studentService.findOne(+id);
+    } catch (error) {
+      throw new HttpException('Error al obtener estudiante', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 
   @Put(':id')
-  update(@Param('id') id: string, @Body() student: Student) {
-    return this.studentService.update(+id, student);
+  async update(@Param('id') id: string, @Body() student: Student) {
+    try {
+      return await this.studentService.update(+id, student);
+    } catch (error) {
+      throw new HttpException('Error al actualizar estudiante', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.studentService.remove(+id);
+  async remove(@Param('id') id: string) {
+    try {
+      return await this.studentService.remove(+id);
+    } catch (error) {
+      throw new HttpException('Error al eliminar estudiante', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 }

@@ -13,12 +13,20 @@ export const AuthProvider = ({ children }) => {
 
   const checkAuth = async () => {
     try {
+      const token = localStorage.getItem('token');
       const storedUser = localStorage.getItem('user');
-      if (storedUser) {
+      if (token && storedUser) {
         setUser(JSON.parse(storedUser));
+      } else {
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        setUser(null);
       }
     } catch (error) {
       console.error('Error checking auth:', error);
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      setUser(null);
     } finally {
       setLoading(false);
     }
@@ -26,9 +34,11 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (credentials) => {
     try {
-      const userData = await API.login(credentials);
-      setUser(userData);
+      const response = await API.login(credentials);
+      const { token, ...userData } = response;
+      localStorage.setItem('token', token);
       localStorage.setItem('user', JSON.stringify(userData));
+      setUser(userData);
       return userData;
     } catch (error) {
       console.error('Error en login:', error);
@@ -38,8 +48,8 @@ export const AuthProvider = ({ children }) => {
 
   const logout = () => {
     setUser(null);
-    localStorage.removeItem('user');
     localStorage.removeItem('token');
+    localStorage.removeItem('user');
   };
 
   const isAdmin = () => {
