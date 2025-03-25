@@ -21,18 +21,26 @@ function Attendance() {
   const fetchData = async () => {
     try {
       setLoading(true);
+      setError(null);
+      console.log('Iniciando carga de datos de asistencia...');
+      
       const [attendanceResponse, schedulesResponse] = await Promise.all([
         API.getAllAttendance(),
         API.getAllSchedules()
       ]);
       
-      setAttendanceRecords(attendanceResponse.data);
-      setSchedules(schedulesResponse.data);
+      console.log('Registros de asistencia recibidos:', attendanceResponse.data);
+      console.log('Horarios recibidos:', schedulesResponse.data);
+      
+      setAttendanceRecords(Array.isArray(attendanceResponse.data) ? attendanceResponse.data : []);
+      setSchedules(Array.isArray(schedulesResponse.data) ? schedulesResponse.data : []);
       setLoading(false);
     } catch (err) {
-      setError('Error al cargar datos');
+      console.error('Error al cargar datos:', err);
+      setError('Error al cargar datos: ' + (err.message || 'Error desconocido'));
+      setAttendanceRecords([]);
+      setSchedules([]);
       setLoading(false);
-      console.error(err);
     }
   };
 
@@ -48,6 +56,7 @@ function Attendance() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      console.log('Enviando datos de nueva asistencia:', newAttendance);
       const attendanceToSave = {
         ...newAttendance,
         scheduleId: parseInt(newAttendance.scheduleId)
@@ -61,13 +70,74 @@ function Attendance() {
       setMessage({ type: 'success', text: 'Asistencia registrada con éxito' });
       fetchData();
     } catch (err) {
-      setMessage({ type: 'danger', text: 'Error al registrar asistencia' });
-      console.error(err);
+      console.error('Error al registrar asistencia:', err);
+      setMessage({ 
+        type: 'danger', 
+        text: `Error al registrar asistencia: ${err.message || 'Error desconocido'}`
+      });
     }
   };
 
+<<<<<<< Updated upstream
+=======
+  const handleEdit = (attendance) => {
+    console.log('Editando asistencia:', attendance);
+    setEditingAttendance({
+      ...attendance,
+      scheduleId: attendance.scheduleId.toString()
+    });
+    setShowEditModal(true);
+  };
+
+  const handleUpdate = async (e) => {
+    e.preventDefault();
+    try {
+      console.log('Actualizando asistencia:', editingAttendance);
+      const attendanceToUpdate = {
+        ...editingAttendance,
+        scheduleId: parseInt(editingAttendance.scheduleId)
+      };
+      await API.updateAttendance(editingAttendance.id, attendanceToUpdate);
+      setMessage({ type: 'success', text: 'Asistencia actualizada con éxito' });
+      setShowEditModal(false);
+      setEditingAttendance(null);
+      fetchData();
+    } catch (err) {
+      console.error('Error al actualizar asistencia:', err);
+      setMessage({ 
+        type: 'danger', 
+        text: `Error al actualizar asistencia: ${err.message || 'Error desconocido'}`
+      });
+    }
+  };
+
+  const handleDelete = async (id) => {
+    if (window.confirm('¿Estás seguro de que deseas eliminar este registro de asistencia?')) {
+      try {
+        console.log('Eliminando asistencia:', id);
+        await API.deleteAttendance(id);
+        setMessage({ type: 'success', text: 'Registro de asistencia eliminado con éxito' });
+        fetchData();
+      } catch (err) {
+        console.error('Error al eliminar asistencia:', err);
+        setMessage({ 
+          type: 'danger', 
+          text: `Error al eliminar asistencia: ${err.message || 'Error desconocido'}`
+        });
+      }
+    }
+  };
+
+  const getScheduleDetails = (scheduleId) => {
+    const schedule = Array.isArray(schedules) ? schedules.find(s => s.id === scheduleId) : null;
+    if (!schedule) return `Horario ${scheduleId}`;
+    
+    return `${schedule.student?.name || 'Sin estudiante'} - ${schedule.class?.name || 'Sin clase'} (${schedule.day} ${schedule.startTime})`;
+  };
+
+>>>>>>> Stashed changes
   return (
-    <div>
+    <div className="container mt-4">
       <h1 className="mb-4">Gestión de Asistencia</h1>
       
       {message && (
@@ -91,7 +161,7 @@ function Attendance() {
                     required
                   >
                     <option value="">Seleccionar horario</option>
-                    {schedules.map(schedule => (
+                    {Array.isArray(schedules) && schedules.map(schedule => (
                       <option key={schedule.id} value={schedule.id}>
                         {`ID: ${schedule.id} - ${schedule.subject} (${schedule.day} ${schedule.startTime})`}
                       </option>
@@ -124,6 +194,7 @@ function Attendance() {
                 <Table responsive striped bordered hover>
                   <thead>
                     <tr>
+<<<<<<< Updated upstream
                       <th>ID</th>
                       <th>ID Horario</th>
                       <th>Asistencia</th>
@@ -146,6 +217,53 @@ function Attendance() {
                     ) : (
                       <tr>
                         <td colSpan="3" className="text-center">No hay registros de asistencia</td>
+=======
+                      <th>Estudiante</th>
+                      <th>Clase</th>
+                      <th>Día y Hora</th>
+                      <th>Estado</th>
+                      <th>Acciones</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {Array.isArray(attendanceRecords) && attendanceRecords.length > 0 ? (
+                      attendanceRecords.map(record => {
+                        const schedule = schedules.find(s => s.id === record.scheduleId);
+                        return (
+                          <tr key={record.id}>
+                            <td>{schedule?.student?.name || 'N/A'}</td>
+                            <td>{schedule?.class?.name || 'N/A'}</td>
+                            <td>{schedule ? `${schedule.day} ${schedule.startTime}` : 'N/A'}</td>
+                            <td>
+                              {record.attended ? 
+                                <span className="text-success">Presente</span> : 
+                                <span className="text-danger">Ausente</span>
+                              }
+                            </td>
+                            <td>
+                              <Button
+                                variant="warning"
+                                size="sm"
+                                className="me-2"
+                                onClick={() => handleEdit(record)}
+                              >
+                                Editar
+                              </Button>
+                              <Button
+                                variant="danger"
+                                size="sm"
+                                onClick={() => handleDelete(record.id)}
+                              >
+                                Eliminar
+                              </Button>
+                            </td>
+                          </tr>
+                        );
+                      })
+                    ) : (
+                      <tr>
+                        <td colSpan="5" className="text-center">No hay registros de asistencia</td>
+>>>>>>> Stashed changes
                       </tr>
                     )}
                   </tbody>
@@ -155,6 +273,52 @@ function Attendance() {
           </Card>
         </Col>
       </Row>
+<<<<<<< Updated upstream
+=======
+
+      <Modal show={showEditModal} onHide={() => setShowEditModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Editar Registro de Asistencia</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form onSubmit={handleUpdate}>
+            <Form.Group className="mb-3">
+              <Form.Label>Horario</Form.Label>
+              <Form.Select
+                name="scheduleId"
+                value={editingAttendance?.scheduleId || ''}
+                onChange={handleInputChange}
+                required
+              >
+                <option value="">Seleccionar horario</option>
+                {Array.isArray(schedules) && schedules.map(schedule => (
+                  <option key={schedule.id} value={schedule.id}>
+                    {getScheduleDetails(schedule.id)}
+                  </option>
+                ))}
+              </Form.Select>
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Check
+                type="checkbox"
+                name="attended"
+                label="Asistió"
+                checked={editingAttendance?.attended || false}
+                onChange={handleInputChange}
+              />
+            </Form.Group>
+            <div className="d-flex justify-content-end gap-2">
+              <Button variant="secondary" onClick={() => setShowEditModal(false)}>
+                Cancelar
+              </Button>
+              <Button variant="primary" type="submit">
+                Guardar cambios
+              </Button>
+            </div>
+          </Form>
+        </Modal.Body>
+      </Modal>
+>>>>>>> Stashed changes
     </div>
   );
 }

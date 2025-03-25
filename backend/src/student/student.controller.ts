@@ -1,6 +1,10 @@
 import { Controller, Get, Post, Body, Put, Delete, Param } from '@nestjs/common';
 import { StudentService } from './student.service';
+<<<<<<< Updated upstream
 import { Student } from './student.entity';
+=======
+import { Student } from '../entities/student.entity';
+>>>>>>> Stashed changes
 
 @Controller('students')
 export class StudentController {
