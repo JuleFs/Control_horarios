@@ -1,6 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
 import { Class } from './class.entity';
-import { Student } from './student.entity';
+import { Student } from '../entities/student.entity';
 
 @Entity()
 export class Schedule {

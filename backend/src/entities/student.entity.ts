@@ -1,3 +1,4 @@
+// src/entities/student.entity.ts
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
 import { Schedule } from './schedule.entity';
 
@@ -12,9 +13,9 @@ export class Student {
   @Column({ unique: true })
   email: string;
 
-  @Column()
+  @Column({ nullable: true })
   phone: string;
 
-  @OneToMany(() => Schedule, schedule => schedule.student)
+  @OneToMany(() => Schedule, schedule => schedule.student, { nullable: true })
   schedules: Schedule[];
-} 
+}

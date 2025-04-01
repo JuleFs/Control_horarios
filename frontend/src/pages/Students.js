@@ -1,21 +1,17 @@
 // pages/Students.js - Página de gestión de estudiantes
 import React, { useState, useEffect } from 'react';
-<<<<<<< Updated upstream
-import { Table, Button, Form, Row, Col, Card, Alert } from 'react-bootstrap';
-=======
 import { Table, Card, Alert, Button, Modal, Form } from 'react-bootstrap';
->>>>>>> Stashed changes
 import API from '../services/api';
 
 function Students() {
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-<<<<<<< Updated upstream
-  const [newStudent, setNewStudent] = useState({ name: '', email: '' });
-=======
->>>>>>> Stashed changes
   const [message, setMessage] = useState(null);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [editingStudent, setEditingStudent] = useState(null);
+  const [newStudent, setNewStudent] = useState({ name: '', email: '', phone: '' });
+  const [showAddModal, setShowAddModal] = useState(false);
 
   useEffect(() => {
     fetchStudents();
@@ -34,26 +30,6 @@ function Students() {
     }
   };
 
-<<<<<<< Updated upstream
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setNewStudent({ ...newStudent, [name]: value });
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      await API.createStudent(newStudent);
-      setNewStudent({ name: '', email: '' });
-      setMessage({ type: 'success', text: 'Estudiante creado con éxito' });
-      fetchStudents();
-    } catch (err) {
-      setMessage({ type: 'danger', text: 'Error al crear estudiante' });
-      console.error(err);
-    }
-  };
-
-=======
   const handleEdit = (student) => {
     setEditingStudent(student);
     setShowEditModal(true);
@@ -94,16 +70,46 @@ function Students() {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setEditingStudent(prev => ({
-      ...prev,
-      [name]: value
-    }));
+    if (editingStudent) {
+      setEditingStudent(prev => ({
+        ...prev,
+        [name]: value
+      }));
+    } else {
+      setNewStudent(prev => ({
+        ...prev,
+        [name]: value
+      }));
+    }
   };
 
->>>>>>> Stashed changes
+  const handleAddStudent = () => {
+    setShowAddModal(true);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await API.createStudent(newStudent);
+      setMessage({ type: 'success', text: 'Estudiante creado con éxito' });
+      setShowAddModal(false);
+      setNewStudent({ name: '', email: '', phone: '' });
+      // Agregar el nuevo estudiante a la lista local
+      setStudents(prevStudents => [...prevStudents, response.data]);
+    } catch (err) {
+      setMessage({ type: 'danger', text: 'Error al crear estudiante' });
+      console.error('Error al crear estudiante:', err);
+    }
+  };
+
   return (
     <div>
-      <h1 className="mb-4">Lista de Estudiantes</h1>
+      <div className="d-flex justify-content-between align-items-center mb-4">
+        <h1>Lista de Estudiantes</h1>
+        <Button variant="primary" onClick={handleAddStudent}>
+          Agregar Estudiante
+        </Button>
+      </div>
       
       {message && (
         <Alert variant={message.type} onClose={() => setMessage(null)} dismissible>
@@ -111,77 +117,6 @@ function Students() {
         </Alert>
       )}
 
-<<<<<<< Updated upstream
-      <Row className="mb-4">
-        <Col lg={5}>
-          <Card>
-            <Card.Header>Registrar Nuevo Estudiante</Card.Header>
-            <Card.Body>
-              <Form onSubmit={handleSubmit}>
-                <Form.Group className="mb-3">
-                  <Form.Label>Nombre completo</Form.Label>
-                  <Form.Control
-                    type="text"
-                    name="name"
-                    value={newStudent.name}
-                    onChange={handleInputChange}
-                    required
-                  />
-                </Form.Group>
-                <Form.Group className="mb-3">
-                  <Form.Label>Correo electrónico</Form.Label>
-                  <Form.Control
-                    type="email"
-                    name="email"
-                    value={newStudent.email}
-                    onChange={handleInputChange}
-                    required
-                  />
-                </Form.Group>
-                <Button variant="primary" type="submit">Registrar</Button>
-              </Form>
-            </Card.Body>
-          </Card>
-        </Col>
-        <Col lg={7}>
-          <Card>
-            <Card.Header>Lista de Estudiantes</Card.Header>
-            <Card.Body>
-              {loading ? (
-                <p>Cargando estudiantes...</p>
-              ) : error ? (
-                <Alert variant="danger">{error}</Alert>
-              ) : (
-                <Table responsive striped bordered hover>
-                  <thead>
-                    <tr>
-                      <th>ID</th>
-                      <th>Nombre</th>
-                      <th>Email</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {students.length > 0 ? (
-                      students.map(student => (
-                        <tr key={student.id}>
-                          <td>{student.id}</td>
-                          <td>{student.name}</td>
-                          <td>{student.email}</td>
-                        </tr>
-                      ))
-                    ) : (
-                      <tr>
-                        <td colSpan="3" className="text-center">No hay estudiantes registrados</td>
-                      </tr>
-                    )}
-                  </tbody>
-                </Table>
-              )}
-            </Card.Body>
-          </Card>
-        </Col>
-      </Row>
-=======
       <Card>
         <Card.Header>Estudiantes Registrados</Card.Header>
         <Card.Body>
@@ -238,6 +173,55 @@ function Students() {
         </Card.Body>
       </Card>
 
+      {/* Modal para agregar estudiantes */}
+      <Modal show={showAddModal} onHide={() => setShowAddModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Agregar Estudiante</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form onSubmit={handleSubmit}>
+            <Form.Group className="mb-3">
+              <Form.Label>Nombre completo</Form.Label>
+              <Form.Control
+                type="text"
+                name="name"
+                value={newStudent.name}
+                onChange={handleInputChange}
+                required
+              />
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>Correo electrónico</Form.Label>
+              <Form.Control
+                type="email"
+                name="email"
+                value={newStudent.email}
+                onChange={handleInputChange}
+                required
+              />
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>Teléfono</Form.Label>
+              <Form.Control
+                type="tel"
+                name="phone"
+                value={newStudent.phone}
+                onChange={handleInputChange}
+                required
+              />
+            </Form.Group>
+            <div className="d-flex justify-content-end gap-2">
+              <Button variant="secondary" onClick={() => setShowAddModal(false)}>
+                Cancelar
+              </Button>
+              <Button variant="primary" type="submit">
+                Guardar
+              </Button>
+            </div>
+          </Form>
+        </Modal.Body>
+      </Modal>
+
       {/* Modal de Edición */}
       <Modal show={showEditModal} onHide={() => setShowEditModal(false)}>
         <Modal.Header closeButton>
@@ -286,7 +270,6 @@ function Students() {
           </Form>
         </Modal.Body>
       </Modal>
->>>>>>> Stashed changes
     </div>
   );
 }

@@ -1,6 +1,6 @@
 // pages/Attendance.js - Página de gestión de asistencia
 import React, { useState, useEffect } from 'react';
-import { Table, Button, Form, Row, Col, Card, Alert } from 'react-bootstrap';
+import { Table, Button, Form, Row, Col, Card, Alert, Modal } from 'react-bootstrap';
 import API from '../services/api';
 
 function Attendance() {
@@ -13,6 +13,8 @@ function Attendance() {
     attended: true
   });
   const [message, setMessage] = useState(null);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [editingAttendance, setEditingAttendance] = useState(null);
 
   useEffect(() => {
     fetchData();
@@ -46,10 +48,21 @@ function Attendance() {
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
-    if (type === 'checkbox') {
-      setNewAttendance({ ...newAttendance, [name]: checked });
+    
+    if (editingAttendance) {
+      // Si estamos editando una asistencia existente
+      if (type === 'checkbox') {
+        setEditingAttendance({ ...editingAttendance, [name]: checked });
+      } else {
+        setEditingAttendance({ ...editingAttendance, [name]: value });
+      }
     } else {
-      setNewAttendance({ ...newAttendance, [name]: value });
+      // Si estamos creando una nueva asistencia
+      if (type === 'checkbox') {
+        setNewAttendance({ ...newAttendance, [name]: checked });
+      } else {
+        setNewAttendance({ ...newAttendance, [name]: value });
+      }
     }
   };
 
@@ -78,8 +91,6 @@ function Attendance() {
     }
   };
 
-<<<<<<< Updated upstream
-=======
   const handleEdit = (attendance) => {
     console.log('Editando asistencia:', attendance);
     setEditingAttendance({
@@ -135,7 +146,6 @@ function Attendance() {
     return `${schedule.student?.name || 'Sin estudiante'} - ${schedule.class?.name || 'Sin clase'} (${schedule.day} ${schedule.startTime})`;
   };
 
->>>>>>> Stashed changes
   return (
     <div className="container mt-4">
       <h1 className="mb-4">Gestión de Asistencia</h1>
@@ -194,30 +204,6 @@ function Attendance() {
                 <Table responsive striped bordered hover>
                   <thead>
                     <tr>
-<<<<<<< Updated upstream
-                      <th>ID</th>
-                      <th>ID Horario</th>
-                      <th>Asistencia</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {attendanceRecords.length > 0 ? (
-                      attendanceRecords.map(record => (
-                        <tr key={record.id}>
-                          <td>{record.id}</td>
-                          <td>{record.scheduleId}</td>
-                          <td>
-                            {record.attended ? 
-                              <span className="text-success">Presente</span> : 
-                              <span className="text-danger">Ausente</span>
-                            }
-                          </td>
-                        </tr>
-                      ))
-                    ) : (
-                      <tr>
-                        <td colSpan="3" className="text-center">No hay registros de asistencia</td>
-=======
                       <th>Estudiante</th>
                       <th>Clase</th>
                       <th>Día y Hora</th>
@@ -263,7 +249,6 @@ function Attendance() {
                     ) : (
                       <tr>
                         <td colSpan="5" className="text-center">No hay registros de asistencia</td>
->>>>>>> Stashed changes
                       </tr>
                     )}
                   </tbody>
@@ -273,8 +258,6 @@ function Attendance() {
           </Card>
         </Col>
       </Row>
-<<<<<<< Updated upstream
-=======
 
       <Modal show={showEditModal} onHide={() => setShowEditModal(false)}>
         <Modal.Header closeButton>
@@ -318,7 +301,6 @@ function Attendance() {
           </Form>
         </Modal.Body>
       </Modal>
->>>>>>> Stashed changes
     </div>
   );
 }

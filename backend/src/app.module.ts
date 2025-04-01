@@ -25,7 +25,7 @@ import { User } from './entities/user.entity';
       useFactory: (configService: ConfigService) => ({
         type: 'postgres',
         host: 'localhost',
-        port: 5432,
+        port: 5050,
         username: 'postgres',
         password: 'admin',
         database: 'school_schedule',

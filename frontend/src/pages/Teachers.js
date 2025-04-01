@@ -1,10 +1,6 @@
 // pages/Teachers.js - Página de gestión de profesores
 import React, { useState, useEffect } from 'react';
-<<<<<<< Updated upstream
-import { Table, Button, Form, Row, Col, Card, Alert } from 'react-bootstrap';
-=======
 import { Table, Card, Alert, Button, Modal, Form } from 'react-bootstrap';
->>>>>>> Stashed changes
 import API from '../services/api';
 
 function Teachers() {
@@ -12,6 +8,10 @@ function Teachers() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [message, setMessage] = useState(null);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [editingTeacher, setEditingTeacher] = useState(null);
+  const [newTeacher, setNewTeacher] = useState({ name: '', email: '', phone: '' });
+  const [showAddModal, setShowAddModal] = useState(false);
 
   useEffect(() => {
     fetchTeachers();
@@ -30,26 +30,6 @@ function Teachers() {
     }
   };
 
-<<<<<<< Updated upstream
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setNewTeacher({ ...newTeacher, [name]: value });
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      await API.createTeacher(newTeacher);
-      setNewTeacher({ name: '', email: '' });
-      setMessage({ type: 'success', text: 'Profesor creado con éxito' });
-      fetchTeachers();
-    } catch (err) {
-      setMessage({ type: 'danger', text: 'Error al crear profesor' });
-      console.error(err);
-    }
-  };
-
-=======
   const handleEdit = (teacher) => {
     setEditingTeacher(teacher);
     setShowEditModal(true);
@@ -90,16 +70,45 @@ function Teachers() {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setEditingTeacher(prev => ({
-      ...prev,
-      [name]: value
-    }));
+    if (editingTeacher) {
+      setEditingTeacher(prev => ({
+        ...prev,
+        [name]: value
+      }));
+    } else {
+      setNewTeacher(prev => ({
+        ...prev,
+        [name]: value
+      }));
+    }
   };
 
->>>>>>> Stashed changes
+  const handleAddTeacher = () => {
+    setShowAddModal(true);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await API.createTeacher(newTeacher);
+      setMessage({ type: 'success', text: 'Profesor creado con éxito' });
+      setShowAddModal(false);
+      setNewTeacher({ name: '', email: '', phone: '' });
+      fetchTeachers();
+    } catch (err) {
+      setMessage({ type: 'danger', text: 'Error al crear profesor' });
+      console.error('Error al crear profesor:', err);
+    }
+  };
+
   return (
     <div>
-      <h1 className="mb-4">Lista de Profesores</h1>
+      <div className="d-flex justify-content-between align-items-center mb-4">
+        <h1>Lista de Profesores</h1>
+        <Button variant="primary" onClick={handleAddTeacher}>
+          Agregar Profesor
+        </Button>
+      </div>
       
       {message && (
         <Alert variant={message.type} onClose={() => setMessage(null)} dismissible>
@@ -107,77 +116,6 @@ function Teachers() {
         </Alert>
       )}
 
-<<<<<<< Updated upstream
-      <Row className="mb-4">
-        <Col lg={5}>
-          <Card>
-            <Card.Header>Registrar Nuevo Profesor</Card.Header>
-            <Card.Body>
-              <Form onSubmit={handleSubmit}>
-                <Form.Group className="mb-3">
-                  <Form.Label>Nombre completo</Form.Label>
-                  <Form.Control
-                    type="text"
-                    name="name"
-                    value={newTeacher.name}
-                    onChange={handleInputChange}
-                    required
-                  />
-                </Form.Group>
-                <Form.Group className="mb-3">
-                  <Form.Label>Correo electrónico</Form.Label>
-                  <Form.Control
-                    type="email"
-                    name="email"
-                    value={newTeacher.email}
-                    onChange={handleInputChange}
-                    required
-                  />
-                </Form.Group>
-                <Button variant="primary" type="submit">Registrar</Button>
-              </Form>
-            </Card.Body>
-          </Card>
-        </Col>
-        <Col lg={7}>
-          <Card>
-            <Card.Header>Lista de Profesores</Card.Header>
-            <Card.Body>
-              {loading ? (
-                <p>Cargando profesores...</p>
-              ) : error ? (
-                <Alert variant="danger">{error}</Alert>
-              ) : (
-                <Table responsive striped bordered hover>
-                  <thead>
-                    <tr>
-                      <th>ID</th>
-                      <th>Nombre</th>
-                      <th>Email</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {teachers.length > 0 ? (
-                      teachers.map(teacher => (
-                        <tr key={teacher.id}>
-                          <td>{teacher.id}</td>
-                          <td>{teacher.name}</td>
-                          <td>{teacher.email}</td>
-                        </tr>
-                      ))
-                    ) : (
-                      <tr>
-                        <td colSpan="3" className="text-center">No hay profesores registrados</td>
-                      </tr>
-                    )}
-                  </tbody>
-                </Table>
-              )}
-            </Card.Body>
-          </Card>
-        </Col>
-      </Row>
-=======
       <Card>
         <Card.Header>Profesores Registrados</Card.Header>
         <Card.Body>
@@ -192,6 +130,7 @@ function Teachers() {
                   <th>ID</th>
                   <th>Nombre</th>
                   <th>Email</th>
+                  <th>Teléfono</th>
                   <th>Acciones</th>
                 </tr>
               </thead>
@@ -202,6 +141,7 @@ function Teachers() {
                       <td>{teacher.id}</td>
                       <td>{teacher.name}</td>
                       <td>{teacher.email}</td>
+                      <td>{teacher.phone}</td>
                       <td>
                         <Button
                           variant="warning"
@@ -223,7 +163,7 @@ function Teachers() {
                   ))
                 ) : (
                   <tr>
-                    <td colSpan="4" className="text-center">No hay profesores registrados</td>
+                    <td colSpan="5" className="text-center">No hay profesores registrados</td>
                   </tr>
                 )}
               </tbody>
@@ -231,6 +171,55 @@ function Teachers() {
           )}
         </Card.Body>
       </Card>
+
+      {/* Modal para agregar profesores */}
+      <Modal show={showAddModal} onHide={() => setShowAddModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Agregar Profesor</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form onSubmit={handleSubmit}>
+            <Form.Group className="mb-3">
+              <Form.Label>Nombre completo</Form.Label>
+              <Form.Control
+                type="text"
+                name="name"
+                value={newTeacher.name}
+                onChange={handleInputChange}
+                required
+              />
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>Correo electrónico</Form.Label>
+              <Form.Control
+                type="email"
+                name="email"
+                value={newTeacher.email}
+                onChange={handleInputChange}
+                required
+              />
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>Teléfono</Form.Label>
+              <Form.Control
+                type="tel"
+                name="phone"
+                value={newTeacher.phone}
+                onChange={handleInputChange}
+                required
+              />
+            </Form.Group>
+            <div className="d-flex justify-content-end gap-2">
+              <Button variant="secondary" onClick={() => setShowAddModal(false)}>
+                Cancelar
+              </Button>
+              <Button variant="primary" type="submit">
+                Guardar
+              </Button>
+            </div>
+          </Form>
+        </Modal.Body>
+      </Modal>
 
       {/* Modal de Edición */}
       <Modal show={showEditModal} onHide={() => setShowEditModal(false)}>
@@ -259,6 +248,16 @@ function Teachers() {
                 required
               />
             </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>Teléfono</Form.Label>
+              <Form.Control
+                type="tel"
+                name="phone"
+                value={editingTeacher?.phone || ''}
+                onChange={handleInputChange}
+                required
+              />
+            </Form.Group>
             <div className="d-flex justify-content-end gap-2">
               <Button variant="secondary" onClick={() => setShowEditModal(false)}>
                 Cancelar
@@ -270,7 +269,6 @@ function Teachers() {
           </Form>
         </Modal.Body>
       </Modal>
->>>>>>> Stashed changes
     </div>
   );
 }

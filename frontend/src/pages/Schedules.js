@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Table, Button, Form, Row, Col, Card, Alert } from 'react-bootstrap';
+import { Table, Button, Form, Row, Col, Card, Alert, Modal } from 'react-bootstrap';
 import API from '../services/api';
 
 function Schedules() {
@@ -16,6 +16,8 @@ function Schedules() {
     endTime: ''
   });
   const [message, setMessage] = useState(null);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [editingSchedule, setEditingSchedule] = useState(null);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -27,20 +29,22 @@ function Schedules() {
     }
     fetchData();
   }, []);
+
   const fetchStudents = async () => {
     try {
       setLoading(true);
       const response = await API.getAllStudents();
       setStudents(response.data);
       setLoading(false);
+      return response;
     } catch (err) {
       setError('Error al cargar estudiantes');
       setLoading(false);
       console.error(err);
+      throw err;
     }
   };
 
-  
   const fetchData = async () => {
     try {
       setLoading(true);
@@ -50,7 +54,7 @@ function Schedules() {
       
       // Obtener estudiantes
       console.log('Obteniendo estudiantes...');
-      const studentsResponse = fetchStudents();
+      const studentsResponse = await fetchStudents();
       console.log('Respuesta de estudiantes:', studentsResponse);
       
       // Obtener clases
@@ -64,8 +68,6 @@ function Schedules() {
       console.log('Respuesta de horarios:', schedulesResponse);
       
       // Verificar y establecer los datos
- 
-
       if (classesResponse.data?.data) {
         setClasses(classesResponse.data.data);
         console.log('Clases establecidas:', classesResponse.data.data);
@@ -102,7 +104,11 @@ function Schedules() {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setNewSchedule({ ...newSchedule, [name]: value });
+    if (editingSchedule) {
+      setEditingSchedule({ ...editingSchedule, [name]: value });
+    } else {
+      setNewSchedule({ ...newSchedule, [name]: value });
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -142,8 +148,6 @@ function Schedules() {
     }
   };
 
-<<<<<<< Updated upstream
-=======
   const handleEdit = (schedule) => {
     console.log('Editando horario:', schedule);
     setEditingSchedule({
@@ -210,7 +214,6 @@ function Schedules() {
     }
   };
 
->>>>>>> Stashed changes
   const daysOfWeek = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
 
   return (
@@ -337,14 +340,6 @@ function Schedules() {
                 <Table responsive striped bordered hover>
                   <thead>
                     <tr>
-<<<<<<< Updated upstream
-                      <th>ID</th>
-                      <th>Estudiante ID</th>
-                      <th>Asignatura</th>
-                      <th>Día</th>
-                      <th>Hora inicio</th>
-                      <th>Hora fin</th>
-=======
                       <th>Estudiante</th>
                       <th>Clase</th>
                       <th>Profesor</th>
@@ -352,21 +347,12 @@ function Schedules() {
                       <th>Hora Inicio</th>
                       <th>Hora Fin</th>
                       <th>Acciones</th>
->>>>>>> Stashed changes
                     </tr>
                   </thead>
                   <tbody>
                     {Array.isArray(schedules) && schedules.length > 0 ? (
                       schedules.map(schedule => (
                         <tr key={schedule.id}>
-<<<<<<< Updated upstream
-                          <td>{schedule.id}</td>
-                          <td>{schedule.studentId}</td>
-                          <td>{schedule.subject}</td>
-                          <td>{schedule.day}</td>
-                          <td>{schedule.startTime}</td>
-                          <td>{schedule.endTime}</td>
-=======
                           <td>{schedule.student?.name || 'N/A'}</td>
                           <td>{schedule.class?.name || 'N/A'}</td>
                           <td>{schedule.class?.teacher?.name || 'N/A'}</td>
@@ -392,12 +378,11 @@ function Schedules() {
                               Eliminar
                             </Button>
                           </td>
->>>>>>> Stashed changes
                         </tr>
                       ))
                     ) : (
                       <tr>
-                        <td colSpan="6" className="text-center">No hay horarios registrados</td>
+                        <td colSpan="7" className="text-center">No hay horarios registrados</td>
                       </tr>
                     )}
                   </tbody>
@@ -407,8 +392,6 @@ function Schedules() {
           </Card>
         </Col>
       </Row>
-<<<<<<< Updated upstream
-=======
 
       <Modal show={showEditModal} onHide={() => !loading && setShowEditModal(false)}>
         <Modal.Header closeButton>
@@ -514,7 +497,6 @@ function Schedules() {
           </Form>
         </Modal.Body>
       </Modal>
->>>>>>> Stashed changes
     </div>
   );
 }
