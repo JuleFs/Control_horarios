@@ -1,35 +1,50 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Table, Button, Modal, Form, Alert } from 'react-bootstrap';
+import { Container, Table, Button, Modal, Form, Alert, Row, Col } from 'react-bootstrap';
 import { useAuth } from '../context/AuthContext';
 import API from '../services/api';
 
 function Users() {
   const [users, setUsers] = useState([]);
+  const [students, setStudents] = useState([]);
+  const [teachers, setTeachers] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     email: '',
     password: '',
     name: '',
     role: 'student',
-    referenceId: ''
+    phone: ''
   });
   const { user } = useAuth();
 
-  const fetchUsers = async () => {
+  // Cargar los datos iniciales
+  useEffect(() => {
+    loadAllData();
+  }, []);
+
+  const loadAllData = async () => {
+    setLoading(true);
     try {
-      const response = await API.getUsers();
-      setUsers(response.data);
+      const [usersRes, studentsRes, teachersRes] = await Promise.all([
+        API.getUsers(),
+        API.getAllStudents(),
+        API.getAllTeachers()
+      ]);
+      
+      setUsers(usersRes.data);
+      setStudents(studentsRes.data);
+      setTeachers(teachersRes.data);
       setError('');
     } catch (error) {
-      console.error('Error al cargar usuarios:', error);
-      setError('Error al cargar los usuarios: ' + (error.response?.data?.message || error.message));
+      console.error('Error al cargar datos:', error);
+      setError('Error al cargar los datos: ' + (error.response?.data?.message || error.message));
+    } finally {
+      setLoading(false);
     }
   };
-
-  useEffect(() => {
-    fetchUsers();
-  }, []);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -41,23 +56,36 @@ function Users() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     try {
-      const response = await API.createUser(formData);
-      console.log('Usuario registrado:', response.data);
+      await API.createUser(formData);
       setShowModal(false);
-      fetchUsers();
+      setSuccess('Usuario registrado exitosamente');
       setFormData({
         email: '',
         password: '',
         name: '',
         role: 'student',
-        referenceId: ''
+        phone: ''
       });
-      setError('');
+      // Recargar todos los datos para mostrar los cambios
+      await loadAllData();
     } catch (error) {
       console.error('Error al registrar usuario:', error);
       setError('Error al registrar el usuario: ' + (error.response?.data?.message || error.message));
+    } finally {
+      setLoading(false);
     }
+  };
+
+  // Buscar el estudiante o profesor asociado a un usuario
+  const findAssociatedEntity = (userEmail, role) => {
+    if (role === 'student') {
+      return students.find(student => student.email === userEmail);
+    } else if (role === 'teacher') {
+      return teachers.find(teacher => teacher.email === userEmail);
+    }
+    return null;
   };
 
   if (!user || user.role !== 'admin') {
@@ -79,28 +107,62 @@ function Users() {
         </Button>
       </div>
 
-      {error && <Alert variant="danger" dismissible onClose={() => setError('')}>{error}</Alert>}
+      {error && (
+        <Alert variant="danger" dismissible onClose={() => setError('')}>
+          {error}
+        </Alert>
+      )}
+      
+      {success && (
+        <Alert variant="success" dismissible onClose={() => setSuccess('')}>
+          {success}
+        </Alert>
+      )}
 
-      <Table striped bordered hover>
-        <thead>
-          <tr>
-            <th>Nombre</th>
-            <th>Email</th>
-            <th>Rol</th>
-            <th>ID de Referencia</th>
-          </tr>
-        </thead>
-        <tbody>
-          {users.map(user => (
-            <tr key={user.id}>
-              <td>{user.name}</td>
-              <td>{user.email}</td>
-              <td>{user.role}</td>
-              <td>{user.referenceId || 'N/A'}</td>
-            </tr>
-          ))}
-        </tbody>
-      </Table>
+      {loading ? (
+        <Alert variant="info">Cargando datos...</Alert>
+      ) : (
+        <Row>
+          <Col>
+            <h4>Usuarios del Sistema</h4>
+            <Table striped bordered hover className="mb-4">
+              <thead>
+                <tr>
+                  <th>Nombre</th>
+                  <th>Email</th>
+                  <th>Rol</th>
+                  <th>Información Asociada</th>
+                </tr>
+              </thead>
+              <tbody>
+                {users.length > 0 ? (
+                  users.map(user => {
+                    const associatedEntity = findAssociatedEntity(user.email, user.role);
+                    return (
+                      <tr key={user.id}>
+                        <td>{user.name}</td>
+                        <td>{user.email}</td>
+                        <td>{user.role === 'admin' ? 'Administrador' : 
+                             user.role === 'teacher' ? 'Profesor' : 'Estudiante'}</td>
+                        <td>
+                          {user.role === 'admin' ? 'N/A' : 
+                            associatedEntity ? 
+                              `ID: ${associatedEntity.id}` : 
+                              'No asociado'}
+                        </td>
+                      </tr>
+                    );
+                  })
+                ) : (
+                  <tr>
+                    <td colSpan="4" className="text-center">No hay usuarios registrados</td>
+                  </tr>
+                )}
+              </tbody>
+            </Table>
+          </Col>
+        </Row>
+      )}
 
       <Modal show={showModal} onHide={() => setShowModal(false)}>
         <Modal.Header closeButton>
@@ -109,7 +171,7 @@ function Users() {
         <Modal.Body>
           <Form onSubmit={handleSubmit}>
             <Form.Group className="mb-3">
-              <Form.Label>Nombre</Form.Label>
+              <Form.Label>Nombre Completo</Form.Label>
               <Form.Control
                 type="text"
                 name="name"
@@ -120,7 +182,7 @@ function Users() {
             </Form.Group>
 
             <Form.Group className="mb-3">
-              <Form.Label>Email</Form.Label>
+              <Form.Label>Correo Electrónico</Form.Label>
               <Form.Control
                 type="email"
                 name="email"
@@ -142,6 +204,17 @@ function Users() {
             </Form.Group>
 
             <Form.Group className="mb-3">
+              <Form.Label>Teléfono</Form.Label>
+              <Form.Control
+                type="tel"
+                name="phone"
+                value={formData.phone}
+                onChange={handleInputChange}
+                placeholder="Opcional"
+              />
+            </Form.Group>
+
+            <Form.Group className="mb-3">
               <Form.Label>Rol</Form.Label>
               <Form.Select
                 name="role"
@@ -151,26 +224,16 @@ function Users() {
               >
                 <option value="student">Estudiante</option>
                 <option value="teacher">Profesor</option>
+                <option value="admin">Administrador</option>
               </Form.Select>
             </Form.Group>
 
-            <Form.Group className="mb-3">
-              <Form.Label>ID de Referencia (opcional)</Form.Label>
-              <Form.Control
-                type="text"
-                name="referenceId"
-                value={formData.referenceId}
-                onChange={handleInputChange}
-                placeholder="ID del estudiante o profesor en el sistema"
-              />
-            </Form.Group>
-
             <div className="d-flex justify-content-end">
-              <Button variant="secondary" className="me-2" onClick={() => setShowModal(false)}>
+              <Button variant="secondary" className="me-2" onClick={() => setShowModal(false)} disabled={loading}>
                 Cancelar
               </Button>
-              <Button variant="primary" type="submit">
-                Registrar
+              <Button variant="primary" type="submit" disabled={loading}>
+                {loading ? 'Registrando...' : 'Registrar Usuario'}
               </Button>
             </div>
           </Form>
@@ -180,4 +243,4 @@ function Users() {
   );
 }
 
-export default Users; 
+export default Users;

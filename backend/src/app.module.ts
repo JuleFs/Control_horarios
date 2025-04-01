@@ -24,20 +24,16 @@ import { User } from './entities/user.entity';
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => ({
-        type: 'mysql',
+        type: 'postgres',
         host: configService.get('DB_HOST', 'localhost'),
-        port: configService.get('DB_PORT', 3306),
-        username: configService.get('DB_USER', 'root'),
-        password: configService.get('DB_PASSWORD', ''),
-        database: configService.get('DB_NAME', 'horarios'),
+        port: configService.get('DB_PORT', 5432),
+        username: configService.get('DB_USER', 'postgres'),
+        password: configService.get('DB_PASSWORD', 'admin'),
+        database: configService.get('DB_NAME', 'school_schedule'),
         entities: [Schedule, Attendance, Student, Teacher, Class, User],
         synchronize: configService.get('DB_SYNC', true),
         logging: true,
-        charset: 'utf8mb4',
-        collation: 'utf8mb4_unicode_ci',
-        extra: {
-          authPlugin: 'mysql_native_password'
-        }
+        autoLoadEntities: true,
       }),
       inject: [ConfigService],
     }),

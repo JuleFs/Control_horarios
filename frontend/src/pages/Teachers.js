@@ -1,16 +1,18 @@
-// pages/Teachers.js - Página de gestión de profesores
 import React, { useState, useEffect } from 'react';
 import { Table, Button, Form, Row, Col, Card, Alert, Modal } from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import API from '../services/api';
 
 function Teachers() {
   const [teachers, setTeachers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [newTeacher, setNewTeacher] = useState({ name: '', email: '' });
   const [message, setMessage] = useState(null);
   const [editingTeacher, setEditingTeacher] = useState(null);
   const [showEditModal, setShowEditModal] = useState(false);
+  const { isAdmin } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchTeachers();
@@ -33,27 +35,7 @@ function Teachers() {
     const { name, value } = e.target;
     if (editingTeacher) {
       setEditingTeacher({ ...editingTeacher, [name]: value });
-    } else {
-      setNewTeacher({ ...newTeacher, [name]: value });
     }
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      await API.createTeacher(newTeacher);
-      setNewTeacher({ name: '', email: '' });
-      setMessage({ type: 'success', text: 'Profesor creado con éxito' });
-      fetchTeachers();
-    } catch (err) {
-      setMessage({ type: 'danger', text: 'Error al crear profesor' });
-      console.error(err);
-    }
-  };
-
-  const handleEdit = (teacher) => {
-    setEditingTeacher(teacher);
-    setShowEditModal(true);
   };
 
   const handleUpdate = async (e) => {
@@ -70,17 +52,26 @@ function Teachers() {
     }
   };
 
+  const handleEdit = (teacher) => {
+    setEditingTeacher(teacher);
+    setShowEditModal(true);
+  };
+
   const handleDelete = async (id) => {
-    if (window.confirm('¿Estás seguro de que deseas eliminar este profesor?')) {
+    if (window.confirm('¿Estás seguro de que deseas eliminar este profesor? Esta acción también eliminará el usuario asociado.')) {
       try {
         await API.deleteTeacher(id);
-        setMessage({ type: 'success', text: 'Profesor eliminado con éxito' });
+        setMessage({ type: 'success', text: 'Profesor y usuario asociado eliminados con éxito' });
         fetchTeachers();
       } catch (err) {
         setMessage({ type: 'danger', text: 'Error al eliminar profesor' });
         console.error(err);
       }
     }
+  };
+
+  const navigateToUserRegistration = () => {
+    navigate('/users');
   };
 
   return (
@@ -94,37 +85,21 @@ function Teachers() {
       )}
 
       <Row className="mb-4">
-        <Col lg={5}>
-          <Card>
-            <Card.Header>Registrar Nuevo Profesor</Card.Header>
+        <Col>
+          <Card className="mb-4">
+            <Card.Header>Información</Card.Header>
             <Card.Body>
-              <Form onSubmit={handleSubmit}>
-                <Form.Group className="mb-3">
-                  <Form.Label>Nombre completo</Form.Label>
-                  <Form.Control
-                    type="text"
-                    name="name"
-                    value={newTeacher.name}
-                    onChange={handleInputChange}
-                    required
-                  />
-                </Form.Group>
-                <Form.Group className="mb-3">
-                  <Form.Label>Correo electrónico</Form.Label>
-                  <Form.Control
-                    type="email"
-                    name="email"
-                    value={newTeacher.email}
-                    onChange={handleInputChange}
-                    required
-                  />
-                </Form.Group>
-                <Button variant="primary" type="submit">Registrar</Button>
-              </Form>
+              <p>
+                Los profesores ahora se registran a través del módulo de Usuarios.
+                Para registrar un nuevo profesor, por favor vaya a la sección de Usuarios
+                y cree un nuevo usuario con el rol de "Profesor".
+              </p>
+              <Button variant="primary" onClick={navigateToUserRegistration}>
+                Ir a Gestión de Usuarios
+              </Button>
             </Card.Body>
           </Card>
-        </Col>
-        <Col lg={7}>
+          
           <Card>
             <Card.Header>Lista de Profesores</Card.Header>
             <Card.Body>
@@ -139,6 +114,7 @@ function Teachers() {
                       <th>ID</th>
                       <th>Nombre</th>
                       <th>Email</th>
+                      <th>Teléfono</th>
                       <th>Acciones</th>
                     </tr>
                   </thead>
@@ -149,6 +125,7 @@ function Teachers() {
                           <td>{teacher.id}</td>
                           <td>{teacher.name}</td>
                           <td>{teacher.email}</td>
+                          <td>{teacher.phone || 'N/A'}</td>
                           <td>
                             <Button
                               variant="warning"
@@ -158,19 +135,21 @@ function Teachers() {
                             >
                               Editar
                             </Button>
-                            <Button
-                              variant="danger"
-                              size="sm"
-                              onClick={() => handleDelete(teacher.id)}
-                            >
-                              Eliminar
-                            </Button>
+                            {isAdmin() && (
+                              <Button
+                                variant="danger"
+                                size="sm"
+                                onClick={() => handleDelete(teacher.id)}
+                              >
+                                Eliminar
+                              </Button>
+                            )}
                           </td>
                         </tr>
                       ))
                     ) : (
                       <tr>
-                        <td colSpan="4" className="text-center">No hay profesores registrados</td>
+                        <td colSpan="5" className="text-center">No hay profesores registrados</td>
                       </tr>
                     )}
                   </tbody>
@@ -199,13 +178,23 @@ function Teachers() {
               />
             </Form.Group>
             <Form.Group className="mb-3">
-              <Form.Label>Correo electrónico</Form.Label>
+              <Form.Label>Correo electrónico (no editable)</Form.Label>
               <Form.Control
                 type="email"
-                name="email"
                 value={editingTeacher?.email || ''}
+                disabled
+              />
+              <Form.Text className="text-muted">
+                El correo electrónico no se puede editar ya que está vinculado al usuario del sistema.
+              </Form.Text>
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>Teléfono</Form.Label>
+              <Form.Control
+                type="tel"
+                name="phone"
+                value={editingTeacher?.phone || ''}
                 onChange={handleInputChange}
-                required
               />
             </Form.Group>
             <div className="d-flex justify-content-end gap-2">
