@@ -1,12 +1,11 @@
-import { Controller, Get, Post, Body, Put, Delete, Param } from '@nestjs/common';
+import { Controller, Get, Post, Body, Put, Delete, Param, UseGuards } from '@nestjs/common';
 import { StudentService } from './student.service';
-<<<<<<< Updated upstream
-import { Student } from './student.entity';
-=======
 import { Student } from '../entities/student.entity';
->>>>>>> Stashed changes
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { Public } from '../auth/public.decorator';
 
 @Controller('students')
+@UseGuards(JwtAuthGuard)
 export class StudentController {
   constructor(private readonly studentService: StudentService) {}
 

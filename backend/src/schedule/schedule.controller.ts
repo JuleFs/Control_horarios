@@ -1,49 +1,39 @@
-<<<<<<< Updated upstream
-import { Controller, Get, Post, Body, Param, Put, Delete } from '@nestjs/common';
-=======
-import { Controller, Get, Post, Body, Put, Param, Delete, HttpException, HttpStatus } from '@nestjs/common';
->>>>>>> Stashed changes
+import { Controller, Get, Post, Body, Param, Put, Delete, UseGuards, Req, Query, HttpException, HttpStatus } from '@nestjs/common';
 import { ScheduleService } from './schedule.service';
 import { Schedule } from './schedule.entity';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { Public } from '../auth/public.decorator';
 
-@Controller('schedules')
+@Controller('schedule')
+@UseGuards(JwtAuthGuard)
 export class ScheduleController {
   constructor(private readonly scheduleService: ScheduleService) {}
 
   @Post()
-<<<<<<< Updated upstream
-  create(@Body() schedule: Schedule) {
-    return this.scheduleService.create(schedule);
-=======
-  async create(@Body() createScheduleDto: CreateScheduleDto) {
+  async create(@Body() schedule: Schedule, @Req() req) {
     try {
-      const schedule = await this.scheduleService.create(createScheduleDto);
-      return {
-        message: 'Horario creado exitosamente',
-        data: schedule
-      };
+      return await this.scheduleService.create(schedule);
     } catch (error) {
-      console.error('Error al crear horario:', error);
       throw new HttpException(
-        error.message || 'Error al crear el horario',
+        error.message || 'Error al crear horario',
         error.status || HttpStatus.INTERNAL_SERVER_ERROR
       );
     }
->>>>>>> Stashed changes
   }
 
   @Get()
-  async findAll() {
+  async findAll(@Query() query) {
     try {
-      const schedules = await this.scheduleService.findAll();
-      return {
-        message: 'Horarios obtenidos exitosamente',
-        data: schedules
-      };
+      // Si hay un studentId en la query, filtramos por estudiante
+      if (query.studentId) {
+        return await this.scheduleService.findByStudent(parseInt(query.studentId));
+      }
+      
+      // Si no hay filtros, retornamos todos
+      return await this.scheduleService.findAll();
     } catch (error) {
-      console.error('Error al obtener horarios:', error);
       throw new HttpException(
-        error.message || 'Error al obtener los horarios',
+        error.message || 'Error al obtener horarios',
         error.status || HttpStatus.INTERNAL_SERVER_ERROR
       );
     }
@@ -52,53 +42,34 @@ export class ScheduleController {
   @Get(':id')
   async findOne(@Param('id') id: string) {
     try {
-      const schedule = await this.scheduleService.findOne(+id);
-      return {
-        message: 'Horario obtenido exitosamente',
-        data: schedule
-      };
+      return await this.scheduleService.findOne(+id);
     } catch (error) {
-      console.error(`Error al obtener horario ${id}:`, error);
       throw new HttpException(
-        error.message || 'Error al obtener el horario',
+        error.message || 'Error al obtener horario',
         error.status || HttpStatus.INTERNAL_SERVER_ERROR
       );
     }
   }
 
   @Put(':id')
-<<<<<<< Updated upstream
-  update(@Param('id') id: string, @Body() schedule: Schedule) {
-    return this.scheduleService.update(+id, schedule);
-=======
-  async update(@Param('id') id: string, @Body() updateScheduleDto: UpdateScheduleDto) {
+  async update(@Param('id') id: string, @Body() schedule: Schedule) {
     try {
-      const schedule = await this.scheduleService.update(+id, updateScheduleDto);
-      return {
-        message: 'Horario actualizado exitosamente',
-        data: schedule
-      };
+      return await this.scheduleService.update(+id, schedule);
     } catch (error) {
-      console.error(`Error al actualizar horario ${id}:`, error);
       throw new HttpException(
-        error.message || 'Error al actualizar el horario',
+        error.message || 'Error al actualizar horario',
         error.status || HttpStatus.INTERNAL_SERVER_ERROR
       );
     }
->>>>>>> Stashed changes
   }
 
   @Delete(':id')
   async remove(@Param('id') id: string) {
     try {
-      await this.scheduleService.remove(+id);
-      return {
-        message: 'Horario eliminado exitosamente'
-      };
+      return await this.scheduleService.remove(+id);
     } catch (error) {
-      console.error(`Error al eliminar horario ${id}:`, error);
       throw new HttpException(
-        error.message || 'Error al eliminar el horario',
+        error.message || 'Error al eliminar horario',
         error.status || HttpStatus.INTERNAL_SERVER_ERROR
       );
     }

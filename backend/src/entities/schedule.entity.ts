@@ -8,6 +8,12 @@ export class Schedule {
   id: number;
 
   @Column()
+  studentId: number;
+
+  @Column()
+  subject: string;
+
+  @Column()
   day: string;
 
   @Column()
@@ -16,9 +22,11 @@ export class Schedule {
   @Column()
   endTime: string;
 
-  @ManyToOne(() => Class, { eager: true })
+  // Actualizamos la relación para que sea nullable y sin referencia inversa
+  @ManyToOne(() => Class, { nullable: true })
   class: Class;
 
-  @ManyToOne(() => Student, { eager: true })
+  // Opcionalmente, si quieres relacionar directamente con el estudiante
+  @ManyToOne(() => Student, { nullable: true })
   student: Student;
-} 
+}

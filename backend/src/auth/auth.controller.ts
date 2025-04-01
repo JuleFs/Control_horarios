@@ -1,7 +1,7 @@
-import { Controller, Post, Body, Get, UseGuards, UnauthorizedException } from '@nestjs/common';
+import { Controller, Post, Body, UseGuards, Request, HttpCode, HttpStatus } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { JwtAuthGuard } from './jwt-auth.guard';
-import { CreateUserDto, AuthResponse } from './interfaces/auth.interface';
+import { LocalAuthGuard } from './local-auth.guard';
 import { Public } from './public.decorator';
 
 @Controller('auth')
@@ -10,38 +10,35 @@ export class AuthController {
 
   @Public()
   @Post('login')
-  async login(@Body() credentials: { email: string; password: string }): Promise<AuthResponse> {
-    try {
-      const user = await this.authService.validateUser(credentials.email, credentials.password);
-      if (!user) {
-        throw new UnauthorizedException('Credenciales inválidas');
-      }
-      return this.authService.login(user);
-    } catch (error) {
-      console.error('Error en login:', error);
-      throw new UnauthorizedException(error.message || 'Error al iniciar sesión');
+  @HttpCode(HttpStatus.OK)
+  async login(@Body() loginData: { email: string; password: string }) {
+    const user = await this.authService.validateUser(loginData.email, loginData.password);
+    
+    if (!user) {
+      return {
+        statusCode: HttpStatus.UNAUTHORIZED,
+        message: 'Credenciales inválidas',
+      };
     }
+    
+    return this.authService.login(user);
   }
 
   @Public()
   @Post('register')
-  async register(@Body() userData: CreateUserDto): Promise<AuthResponse> {
-    try {
-      return await this.authService.createUser(userData);
-    } catch (error) {
-      console.error('Error en registro:', error);
-      throw new UnauthorizedException(error.message || 'Error al registrar usuario');
-    }
+  async register(@Body() registerData: {
+    name: string;
+    email: string;
+    password: string;
+    role: 'admin' | 'teacher' | 'student';
+    phone?: string;
+  }) {
+    return this.authService.register(registerData);
   }
 
   @UseGuards(JwtAuthGuard)
-  @Get('users')
-  async getUsers() {
-    try {
-      return await this.authService.findAll();
-    } catch (error) {
-      console.error('Error al obtener usuarios:', error);
-      throw new UnauthorizedException(error.message || 'Error al obtener usuarios');
-    }
+  @Post('profile')
+  getProfile(@Request() req) {
+    return req.user;
   }
-} 
+}
