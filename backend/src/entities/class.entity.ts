@@ -10,7 +10,7 @@ export class Class {
   @Column()
   name: string;
 
-  @Column()
+  @Column ({ nullable: true })
   description: string;
 
   @OneToMany(() => Schedule, (schedule) => schedule.class)

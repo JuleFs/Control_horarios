@@ -12,7 +12,7 @@ export class Teacher {
   @Column()
   email: string;
 
-  @Column()
+  @Column({ nullable: true })
   phone: string;
 
   @OneToMany(() => Schedule, (schedule) => schedule.teacher)
