@@ -1,47 +1,39 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ScheduleModule } from './schedule/schedule.module';
-import { AttendanceModule } from './attendance/attendance.module';
-import { Schedule } from './schedule/schedule.entity';
-import { Attendance } from './attendance/attendance.entity';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { Student } from './entities/student.entity';
-import { Teacher } from './entities/teacher.entity';
-import { Class } from './entities/class.entity';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { StudentModule } from './student/student.module';
-import { TeacherModule } from './teacher/teacher.module';
-import { ClassModule } from './class/class.module';
-import { AuthModule } from './auth/auth.module';
-import { User } from './entities/user.entity';
+import { GrupoModule } from './grupo/grupo.module';
+import { AlumnoModule } from './alumno/alumno.module';
+import { MaestroModule } from './maestro/maestro.module';
+import { ChecadorModule } from './checador/checador.module';
+import { SalonModule } from './salon/salon.module';
+import { MateriaModule } from './materia/materia.module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
-        type: 'postgres',
-        host: 'localhost',
-        port: 5050,
-        username: 'postgres',
-        password: 'admin',
-        database: 'school_schedule',
-        entities: [Schedule, Attendance, Student, Teacher, Class, User],
-        autoLoadEntities: true,
-        synchronize: true,
+        type: 'mysql',
+        host: configService.get('DB_HOST', 'localhost'),
+        port: configService.get<number>('DB_PORT', 3306),
+        username: configService.get('DB_USERNAME', 'root'),
+        password: configService.get('DB_PASSWORD', 'admin12'),
+        database: configService.get('DB_NAME', 'horarios_escolares'),
+        entities: [__dirname + '/**/*.entity{.ts,.js}'],
+        synchronize: configService.get('NODE_ENV') !== 'production',
       }),
     }),
-    ScheduleModule,
-    AttendanceModule,
-    StudentModule,
-    TeacherModule,
-    ClassModule,
-    AuthModule,
+    GrupoModule,
+    AlumnoModule,
+    MaestroModule,
+    ChecadorModule,
+    SalonModule,
+    MateriaModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
 })
 export class AppModule {}
+
