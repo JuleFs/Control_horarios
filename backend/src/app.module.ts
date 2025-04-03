@@ -7,6 +7,13 @@ import { MaestroModule } from './maestro/maestro.module';
 import { ChecadorModule } from './checador/checador.module';
 import { SalonModule } from './salon/salon.module';
 import { MateriaModule } from './materia/materia.module';
+import { HorarioModule } from './horario/horario.module';
+import { AsistenciaModule } from './asistencia/asistencia.module';
+import { AdminModule } from './admin/admin.module';
+import { AuthModule } from './auth/auth.module';
+import { APP_GUARD } from '@nestjs/core';
+import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
+import { RolesGuard } from './auth/guards/roles.guard';
 
 @Module({
   imports: [
@@ -17,10 +24,10 @@ import { MateriaModule } from './materia/materia.module';
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
-        type: 'postgres', // Cambiar de 'mysql' a 'postgres'
+        type: 'postgres',
         host: configService.get('DB_HOST', 'localhost'),
-        port: configService.get<number>('DB_PORT', 5432), // Cambiar puerto predeterminado de 3306 a 5432
-        username: configService.get('DB_USERNAME', 'postgres'), // Valor predeterminado típico para PostgreSQL
+        port: configService.get<number>('DB_PORT', 5432),
+        username: configService.get('DB_USERNAME', 'postgres'),
         password: configService.get('DB_PASSWORD', 'admin'),
         database: configService.get('DB_NAME', 'horarios_escolares'),
         entities: [__dirname + '/**/*.entity{.ts,.js}'],
@@ -33,7 +40,22 @@ import { MateriaModule } from './materia/materia.module';
     ChecadorModule,
     SalonModule,
     MateriaModule,
+    HorarioModule,
+    AsistenciaModule,
+    AdminModule,
+    AuthModule,
+  ],
+  providers: [
+    // Aplicar JwtAuthGuard globalmente (excepto rutas con @Public())
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard,
+    },
+    // Aplicar RolesGuard globalmente
+    {
+      provide: APP_GUARD,
+      useClass: RolesGuard,
+    },
   ],
 })
 export class AppModule {}
-

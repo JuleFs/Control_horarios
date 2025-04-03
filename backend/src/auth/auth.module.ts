@@ -7,6 +7,7 @@ import { AuthController } from './auth.controller';
 import { AlumnoModule } from '../alumno/alumno.module';
 import { MaestroModule } from '../maestro/maestro.module';
 import { ChecadorModule } from '../checador/checador.module';
+import { AdminModule } from '../admin/admin.module';
 import { JwtStrategy } from './strategies/jwt-strategy';
 import { LocalStrategy } from './strategies/local.strategy';
 
@@ -27,6 +28,7 @@ import { LocalStrategy } from './strategies/local.strategy';
     AlumnoModule,
     MaestroModule,
     ChecadorModule,
+    AdminModule,
   ],
   providers: [AuthService, JwtStrategy, LocalStrategy],
   controllers: [AuthController],

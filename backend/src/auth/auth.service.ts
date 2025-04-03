@@ -3,6 +3,8 @@ import { JwtService } from '@nestjs/jwt';
 import { AlumnoService } from '../alumno/alumno.service';
 import { MaestroService } from '../maestro/maestro.service';
 import { ChecadorService } from '../checador/checador.service';
+import { AdminService } from '../admin/admin.service';
+import { Role } from './enums/role.enum';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
@@ -11,6 +13,7 @@ export class AuthService {
     private alumnoService: AlumnoService,
     private maestroService: MaestroService,
     private checadorService: ChecadorService,
+    private adminService: AdminService,
     private jwtService: JwtService,
   ) {}
 
@@ -18,14 +21,17 @@ export class AuthService {
     let user;
 
     switch (userType) {
-      case 'alumno':
+      case Role.ALUMNO:
         user = await this.alumnoService.findByEmail(email);
         break;
-      case 'maestro':
+      case Role.MAESTRO:
         user = await this.maestroService.findByEmail(email);
         break;
-      case 'checador':
+      case Role.CHECADOR:
         user = await this.checadorService.findByEmail(email);
+        break;
+      case Role.ADMIN:
+        user = await this.adminService.findByEmail(email);
         break;
       default:
         throw new UnauthorizedException('Tipo de usuario inválido');
@@ -42,8 +48,24 @@ export class AuthService {
   }
 
   async login(user: any) {
+    let userId;
+    
+    // Determinar el ID basado en el tipo de usuario
+    switch (user.userType) {
+      case Role.ALUMNO:
+        userId = user.ID_Alumno;
+        break;
+      case Role.MAESTRO:
+        userId = user.ID_Maestro;
+        break;
+      case Role.CHECADOR:
+      case Role.ADMIN:
+        userId = user.ID;
+        break;
+    }
+    
     const payload = {
-      sub: user.ID_Alumno || user.ID_Maestro || user.ID,
+      sub: userId,
       email: user.Correo,
       userType: user.userType,
     };
@@ -51,7 +73,7 @@ export class AuthService {
     return {
       access_token: this.jwtService.sign(payload),
       user: {
-        id: user.ID_Alumno || user.ID_Maestro || user.ID,
+        id: userId,
         nombre: user.Nombre,
         correo: user.Correo,
         userType: user.userType,

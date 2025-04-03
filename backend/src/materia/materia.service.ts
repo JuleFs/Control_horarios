@@ -1,3 +1,4 @@
+// src/materia/materia.service.ts
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -50,6 +51,15 @@ export class MateriaService {
     
     return materia;
   }
+  
+  async findByMaestro(maestroId: number): Promise<Materia[]> {
+    return this.materiaRepository.find({
+      where: {
+        Maestro: { ID_Maestro: maestroId }
+      },
+      relations: ['Maestro', 'Salon']
+    });
+  }
 
   async update(id: number, updateMateriaDto: CreateMateriaDto): Promise<Materia> {
     const materia = await this.findOne(id);
@@ -80,5 +90,5 @@ export class MateriaService {
     if (result.affected === 0) {
       throw new NotFoundException(`Materia con ID ${id} no encontrada`);
     }
-}
+  }
 }
