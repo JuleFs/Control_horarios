@@ -5,7 +5,6 @@ import { AsistenciaController } from './asistencia.controller';
 import { AsistenciaService } from './asistencia.service';
 import { HorarioModule } from '../horario/horario.module';
 import { AlumnoModule } from '../alumno/alumno.module';
-// Importa otros módulos necesarios
 
 @Module({
   imports: [
