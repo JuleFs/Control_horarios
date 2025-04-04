@@ -6,7 +6,6 @@ import { useAuth } from '../../contexts/AuthContext';
 import axiosInstance from '../../api/axios';
 import {
   Typography,
-  Grid,
   Card,
   CardContent,
   CardActions,
@@ -88,10 +87,16 @@ const AlumnoDashboard: React.FC = () => {
         Welcome, {authState.user?.nombre}
       </Typography>
       
-      <Grid container spacing={3}>
-        {/* Summary Cards */}
-        <Grid item xs={12} md={4}>
-          <Card>
+      {/* Summary Cards - using Box instead of Grid */}
+      <Box sx={{ 
+        display: 'flex', 
+        flexDirection: { xs: 'column', md: 'row' }, 
+        gap: 3,
+        mb: 3
+      }}>
+        {/* Card 1 - Attendance Rate */}
+        <Box sx={{ flex: 1 }}>
+          <Card sx={{ height: '100%' }}>
             <CardContent>
               <Typography variant="h6" gutterBottom>
                 Attendance Rate
@@ -133,10 +138,11 @@ const AlumnoDashboard: React.FC = () => {
               </Button>
             </CardActions>
           </Card>
-        </Grid>
+        </Box>
         
-        <Grid item xs={12} md={4}>
-          <Card>
+        {/* Card 2 - Today's Classes */}
+        <Box sx={{ flex: 1 }}>
+          <Card sx={{ height: '100%' }}>
             <CardContent>
               <Typography variant="h6" gutterBottom>
                 Today's Classes
@@ -154,10 +160,11 @@ const AlumnoDashboard: React.FC = () => {
               </Button>
             </CardActions>
           </Card>
-        </Grid>
+        </Box>
         
-        <Grid item xs={12} md={4}>
-          <Card>
+        {/* Card 3 - Next Class */}
+        <Box sx={{ flex: 1 }}>
+          <Card sx={{ height: '100%' }}>
             <CardContent>
               <Typography variant="h6" gutterBottom>
                 Next Class
@@ -181,56 +188,60 @@ const AlumnoDashboard: React.FC = () => {
               )}
             </CardContent>
           </Card>
-        </Grid>
+        </Box>
+      </Box>
+      
+      {/* Today's Schedule */}
+      <Paper sx={{ p: 2 }}>
+        <Typography variant="h5" gutterBottom>
+          <CalendarTodayIcon sx={{ mr: 1, verticalAlign: 'middle' }} />
+          Today's Schedule
+        </Typography>
         
-        {/* Today's Schedule */}
-        <Grid item xs={12}>
-          <Paper sx={{ p: 2 }}>
-            <Typography variant="h5" gutterBottom>
-              <CalendarTodayIcon sx={{ mr: 1, verticalAlign: 'middle' }} />
-              Today's Schedule
-            </Typography>
-            
-            {horariosLoading ? (
-              <Box sx={{ display: 'flex', justifyContent: 'center', p: 3 }}>
-                <CircularProgress />
+        {horariosLoading ? (
+          <Box sx={{ display: 'flex', justifyContent: 'center', p: 3 }}>
+            <CircularProgress />
+          </Box>
+        ) : horariosError ? (
+          <Alert severity="error">Error loading schedules</Alert>
+        ) : todaySchedule.length === 0 ? (
+          <Typography variant="body1" sx={{ p: 2 }}>
+            No classes scheduled for today.
+          </Typography>
+        ) : (
+          <Box sx={{ 
+            display: 'flex', 
+            flexWrap: 'wrap', 
+            gap: 2
+          }}>
+            {todaySchedule.map((horario) => (
+              <Box key={horario.ID} sx={{ width: { xs: '100%', md: 'calc(50% - 8px)' } }}>
+                <Card sx={{ mb: 2 }}>
+                  <CardContent>
+                    <Typography variant="h6" color="primary">
+                      <BookIcon sx={{ mr: 1, verticalAlign: 'middle' }} />
+                      {horario.Materia.Nombre}
+                    </Typography>
+                    <Divider sx={{ my: 1 }} />
+                    <Typography variant="body2">
+                      <AccessTimeIcon fontSize="small" sx={{ mr: 1, verticalAlign: 'middle' }} />
+                      {horario.HoraInicio} - {horario.HoraFin}
+                    </Typography>
+                    <Typography variant="body2">
+                      Teacher: {horario.Materia.Maestro.Nombre}
+                    </Typography>
+                    <Typography variant="body2">
+                      Room: {horario.Salon.Nombre}
+                    </Typography>
+                  </CardContent>
+                </Card>
               </Box>
-            ) : horariosError ? (
-              <Alert severity="error">Error loading schedules</Alert>
-            ) : todaySchedule.length === 0 ? (
-              <Typography variant="body1" sx={{ p: 2 }}>
-                No classes scheduled for today.
-              </Typography>
-            ) : (
-              <Grid container spacing={2}>
-                {todaySchedule.map((horario) => (
-                  <Grid item xs={12} md={6} key={horario.ID}>
-                    <Card sx={{ mb: 2 }}>
-                      <CardContent>
-                        <Typography variant="h6" color="primary">
-                          <BookIcon sx={{ mr: 1, verticalAlign: 'middle' }} />
-                          {horario.Materia.Nombre}
-                        </Typography>
-                        <Divider sx={{ my: 1 }} />
-                        <Typography variant="body2">
-                          <AccessTimeIcon fontSize="small" sx={{ mr: 1, verticalAlign: 'middle' }} />
-                          {horario.HoraInicio} - {horario.HoraFin}
-                        </Typography>
-                        <Typography variant="body2">
-                          Teacher: {horario.Materia.Maestro.Nombre}
-                        </Typography>
-                        <Typography variant="body2">
-                          Room: {horario.Salon.Nombre}
-                        </Typography>
-                      </CardContent>
-                    </Card>
-                  </Grid>
-                ))}
-              </Grid>
-            )}
-          </Paper>
-        </Grid>
-      </Grid>
+            ))}
+          </Box>
+        )}
+      </Paper>
     </MainLayout>
   );
 };
+
+export default AlumnoDashboard;

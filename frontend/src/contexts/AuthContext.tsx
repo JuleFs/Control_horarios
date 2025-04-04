@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { AuthState, LoginCredentials, User, UserRole } from '../types/auth.types';
 import { authService } from '../api/auth.service';
 import { getAuth, setAuth } from '../utils/localStorage';
-import * as jwt_decode from 'jwt-decode';
+import { jwtDecode } from 'jwt-decode';
 
 interface AuthContextType {
   authState: AuthState;
@@ -33,7 +33,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     if (auth && auth.token) {
       // Verify token expiration
       try {
-        const decoded: any = jwt_decode(auth.token);
+       // Asumiendo que tienes un token en auth.token
+       const decoded = jwtDecode<any>(auth.token);
         const currentTime = Date.now() / 1000;
         
         if (decoded.exp && decoded.exp > currentTime) {

@@ -25,7 +25,6 @@ import PersonIcon from '@mui/icons-material/Person';
 import ClassIcon from '@mui/icons-material/Class';
 import MeetingRoomIcon from '@mui/icons-material/MeetingRoom';
 import TimelineIcon from '@mui/icons-material/Timeline';
-import Grid from '@mui/material/Grid'
 
 interface StatsData {
   alumnosCount: number;
@@ -97,15 +96,26 @@ const AdminDashboard: React.FC = () => {
       </Typography>
       
       {/* Statistics Cards */}
-      <Grid container spacing={3} sx={{ mb: 4 }}>
+      <Box sx={{ mb: 4 }}>
         {statsLoading ? (
           <Box sx={{ display: 'flex', justifyContent: 'center', width: '100%', p: 3 }}>
             <CircularProgress />
           </Box>
         ) : (
-          <>
-            <Grid item xs={12} sm={6} md={4}>
-              <Card>
+          <Box sx={{ 
+            display: 'flex', 
+            flexWrap: 'wrap', 
+            gap: 3 
+          }}>
+            {/* Students Card */}
+            <Box sx={{ 
+              width: { 
+                xs: '100%', 
+                sm: 'calc(50% - 12px)', 
+                md: 'calc(33.333% - 16px)' 
+              } 
+            }}>
+              <Card sx={{ height: '100%' }}>
                 <CardContent>
                   <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
                     <Avatar sx={{ bgcolor: 'primary.main', mr: 2 }}>
@@ -119,10 +129,17 @@ const AdminDashboard: React.FC = () => {
                   <Button size="small" component={Link} to="/admin/alumnos">Manage Students</Button>
                 </CardActions>
               </Card>
-            </Grid>
+            </Box>
             
-            <Grid item xs={12} sm={6} md={4}>
-              <Card>
+            {/* Teachers Card */}
+            <Box sx={{ 
+              width: { 
+                xs: '100%', 
+                sm: 'calc(50% - 12px)', 
+                md: 'calc(33.333% - 16px)' 
+              } 
+            }}>
+              <Card sx={{ height: '100%' }}>
                 <CardContent>
                   <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
                     <Avatar sx={{ bgcolor: 'secondary.main', mr: 2 }}>
@@ -136,10 +153,17 @@ const AdminDashboard: React.FC = () => {
                   <Button size="small" component={Link} to="/admin/maestros">Manage Teachers</Button>
                 </CardActions>
               </Card>
-            </Grid>
+            </Box>
             
-            <Grid item xs={12} sm={6} md={4}>
-              <Card>
+            {/* Groups Card */}
+            <Box sx={{ 
+              width: { 
+                xs: '100%', 
+                sm: 'calc(50% - 12px)', 
+                md: 'calc(33.333% - 16px)' 
+              } 
+            }}>
+              <Card sx={{ height: '100%' }}>
                 <CardContent>
                   <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
                     <Avatar sx={{ bgcolor: 'success.main', mr: 2 }}>
@@ -153,10 +177,17 @@ const AdminDashboard: React.FC = () => {
                   <Button size="small" component={Link} to="/admin/grupos">Manage Groups</Button>
                 </CardActions>
               </Card>
-            </Grid>
+            </Box>
             
-            <Grid item xs={12} sm={6} md={4}>
-              <Card>
+            {/* Classrooms Card */}
+            <Box sx={{ 
+              width: { 
+                xs: '100%', 
+                sm: 'calc(50% - 12px)', 
+                md: 'calc(33.333% - 16px)' 
+              } 
+            }}>
+              <Card sx={{ height: '100%' }}>
                 <CardContent>
                   <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
                     <Avatar sx={{ bgcolor: 'error.main', mr: 2 }}>
@@ -170,10 +201,17 @@ const AdminDashboard: React.FC = () => {
                   <Button size="small" component={Link} to="/admin/salones">Manage Classrooms</Button>
                 </CardActions>
               </Card>
-            </Grid>
+            </Box>
             
-            <Grid item xs={12} sm={6} md={4}>
-              <Card>
+            {/* Subjects Card */}
+            <Box sx={{ 
+              width: { 
+                xs: '100%', 
+                sm: 'calc(50% - 12px)', 
+                md: 'calc(33.333% - 16px)' 
+              } 
+            }}>
+              <Card sx={{ height: '100%' }}>
                 <CardContent>
                   <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
                     <Avatar sx={{ bgcolor: 'warning.main', mr: 2 }}>
@@ -187,10 +225,17 @@ const AdminDashboard: React.FC = () => {
                   <Button size="small" component={Link} to="/admin/materias">Manage Subjects</Button>
                 </CardActions>
               </Card>
-            </Grid>
+            </Box>
             
-            <Grid item xs={12} sm={6} md={4}>
-              <Card>
+            {/* Attendance Checkers Card */}
+            <Box sx={{ 
+              width: { 
+                xs: '100%', 
+                sm: 'calc(50% - 12px)', 
+                md: 'calc(33.333% - 16px)' 
+              } 
+            }}>
+              <Card sx={{ height: '100%' }}>
                 <CardContent>
                   <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
                     <Avatar sx={{ bgcolor: 'info.main', mr: 2 }}>
@@ -204,10 +249,10 @@ const AdminDashboard: React.FC = () => {
                   <Button size="small" component={Link} to="/admin/checadores">Manage Checkers</Button>
                 </CardActions>
               </Card>
-            </Grid>
-          </>
+            </Box>
+          </Box>
         )}
-      </Grid>
+      </Box>
       
       {/* Recent Activity */}
       <Paper sx={{ p: 2, mb: 4 }}>
@@ -257,8 +302,19 @@ const AdminDashboard: React.FC = () => {
         <Typography variant="h5" gutterBottom>
           Quick Actions
         </Typography>
-        <Grid container spacing={2}>
-          <Grid item xs={12} sm={6} md={3}>
+        <Box sx={{ 
+          display: 'flex', 
+          flexWrap: 'wrap', 
+          gap: 2 
+        }}>
+          {/* Add New Student Button */}
+          <Box sx={{ 
+            width: { 
+              xs: '100%', 
+              sm: 'calc(50% - 8px)', 
+              md: 'calc(25% - 12px)' 
+            } 
+          }}>
             <Button 
               variant="contained" 
               color="primary" 
@@ -269,8 +325,16 @@ const AdminDashboard: React.FC = () => {
             >
               Add New Student
             </Button>
-          </Grid>
-          <Grid item xs={12} sm={6} md={3}>
+          </Box>
+          
+          {/* Add New Teacher Button */}
+          <Box sx={{ 
+            width: { 
+              xs: '100%', 
+              sm: 'calc(50% - 8px)', 
+              md: 'calc(25% - 12px)' 
+            } 
+          }}>
             <Button 
               variant="contained" 
               color="secondary" 
@@ -281,8 +345,16 @@ const AdminDashboard: React.FC = () => {
             >
               Add New Teacher
             </Button>
-          </Grid>
-          <Grid item xs={12} sm={6} md={3}>
+          </Box>
+          
+          {/* Create Schedule Button */}
+          <Box sx={{ 
+            width: { 
+              xs: '100%', 
+              sm: 'calc(50% - 8px)', 
+              md: 'calc(25% - 12px)' 
+            } 
+          }}>
             <Button 
               variant="contained" 
               color="success" 
@@ -293,8 +365,16 @@ const AdminDashboard: React.FC = () => {
             >
               Create Schedule
             </Button>
-          </Grid>
-          <Grid item xs={12} sm={6} md={3}>
+          </Box>
+          
+          {/* View Reports Button */}
+          <Box sx={{ 
+            width: { 
+              xs: '100%', 
+              sm: 'calc(50% - 8px)', 
+              md: 'calc(25% - 12px)' 
+            } 
+          }}>
             <Button 
               variant="contained" 
               color="info" 
@@ -305,8 +385,8 @@ const AdminDashboard: React.FC = () => {
             >
               View Reports
             </Button>
-          </Grid>
-        </Grid>
+          </Box>
+        </Box>
       </Paper>
     </MainLayout>
   );

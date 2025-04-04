@@ -34,6 +34,7 @@ import {
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
+import { SelectChangeEvent } from '@mui/material/Select';
 import { UserRole } from '../../types/auth.types';
 
 // Interface definitions for different user types
@@ -387,7 +388,9 @@ const UserManagement: React.FC = () => {
   };
   
   // Handle form input changes
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | { name?: string; value: unknown }>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | SelectChangeEvent
+  ) => {
     const { name, value } = e.target;
     setFormData({
       ...formData,

@@ -15,7 +15,6 @@ import {
   Alert,
   Box,
   Chip,
-  Grid,
   Card,
   CardContent,
   FormControl,
@@ -107,9 +106,17 @@ const AlumnoAsistencias: React.FC = () => {
       ) : (
         <>
           {/* Statistics Cards */}
-          <Grid container spacing={3} sx={{ mb: 4 }}>
-            <Grid item xs={12} md={4}>
-              <Card>
+          <Box 
+            sx={{ 
+              display: 'flex', 
+              flexDirection: { xs: 'column', md: 'row' },
+              gap: 3,
+              mb: 4 
+            }}
+          >
+            {/* Total Classes Card */}
+            <Box sx={{ flex: 1, width: { xs: '100%', md: '33.333%' } }}>
+              <Card sx={{ height: '100%' }}>
                 <CardContent>
                   <Typography variant="h6" gutterBottom>
                     Total Classes
@@ -117,9 +124,11 @@ const AlumnoAsistencias: React.FC = () => {
                   <Typography variant="h4">{totalClasses}</Typography>
                 </CardContent>
               </Card>
-            </Grid>
-            <Grid item xs={12} md={4}>
-              <Card>
+            </Box>
+            
+            {/* Present Card */}
+            <Box sx={{ flex: 1, width: { xs: '100%', md: '33.333%' } }}>
+              <Card sx={{ height: '100%' }}>
                 <CardContent>
                   <Typography variant="h6" gutterBottom>
                     Present
@@ -129,9 +138,11 @@ const AlumnoAsistencias: React.FC = () => {
                   </Typography>
                 </CardContent>
               </Card>
-            </Grid>
-            <Grid item xs={12} md={4}>
-              <Card>
+            </Box>
+            
+            {/* Absent Card */}
+            <Box sx={{ flex: 1, width: { xs: '100%', md: '33.333%' } }}>
+              <Card sx={{ height: '100%' }}>
                 <CardContent>
                   <Typography variant="h6" gutterBottom>
                     Absent
@@ -141,8 +152,8 @@ const AlumnoAsistencias: React.FC = () => {
                   </Typography>
                 </CardContent>
               </Card>
-            </Grid>
-          </Grid>
+            </Box>
+          </Box>
           
           {/* Filter */}
           <Box sx={{ mb: 3 }}>
