@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Materia } from '../entities/materia.entity';
 import { MateriaController } from './materia.controller';
@@ -9,8 +9,8 @@ import { SalonModule } from '../salon/salon.module';
 @Module({
   imports: [
     TypeOrmModule.forFeature([Materia]),
-    MaestroModule,
-    SalonModule,
+    forwardRef(() => MaestroModule),
+    SalonModule
   ],
   controllers: [MateriaController],
   providers: [MateriaService],

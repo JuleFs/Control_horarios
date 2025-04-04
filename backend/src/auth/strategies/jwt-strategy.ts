@@ -7,7 +7,7 @@ import { ConfigService } from '@nestjs/config';
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(private readonly configService: ConfigService) {
     // Obtener el secreto antes de pasarlo al constructor
-    const secretKey = configService.get<string>('JWT_SECRET');
+    const secretKey = configService.get<string>('JWT_SECRET') || 'desarrollo_secreto_temporal';
     
     if (!secretKey) {
       throw new Error('JWT_SECRET no está definido en la configuración');

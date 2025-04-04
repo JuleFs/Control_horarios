@@ -1,5 +1,5 @@
 // src/asistencia/asistencia.controller.ts
-import { Controller, Get, Post, Body, Param, Put, Delete, Query, ParseDatePipe, ParseIntPipe, Request } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Put, Delete, Query, ParseIntPipe, Request } from '@nestjs/common';
 import { AsistenciaService } from './asistencia.service';
 import { CreateAsistenciaDto } from './dto/create-asistencia.dto';
 import { Asistencia } from '../entities/asistencia.entity';
@@ -7,6 +7,7 @@ import { Roles } from '../auth/decorators/roles.decorator';
 import { Role } from '../auth/enums/role.enum';
 import { HorarioService } from '../horario/horario.service';
 import { AlumnoService } from '../alumno/alumno.service';
+import { ParseDatePipe } from '../pipes/parse-date.pipe';
 
 @Controller('asistencias')
 export class AsistenciaController {
@@ -72,14 +73,16 @@ export class AsistenciaController {
     return this.asistenciaService.findByHorario(horarioId);
   }
   
+
+  
   @Get('fecha/rango')
   @Roles(Role.ADMIN, Role.CHECADOR, Role.MAESTRO)
-  findByFecha(
-    @Query('fechaInicio', ParseDatePipe) fechaInicio: Date,
-    @Query('fechaFin', ParseDatePipe) fechaFin: Date
-  ): Promise<Asistencia[]> {
-    return this.asistenciaService.findByFecha(fechaInicio, fechaFin);
-  }
+findByFecha(
+  @Query('fechaInicio', new ParseDatePipe()) fechaInicio: Date,
+  @Query('fechaFin', new ParseDatePipe()) fechaFin: Date
+): Promise<Asistencia[]> {
+  return this.asistenciaService.findByFecha(fechaInicio, fechaFin);
+}
   
   @Get('grupo/:id/fecha')
   @Roles(Role.ADMIN, Role.CHECADOR, Role.MAESTRO)

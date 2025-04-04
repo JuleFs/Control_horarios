@@ -1,17 +1,18 @@
-// src/materia/materia.service.ts
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, Inject, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Materia } from '../entities/materia.entity';
 import { CreateMateriaDto } from './dto/create-materia.dto';
-import { MaestroService } from '../maestro/maestro.service';
 import { SalonService } from '../salon/salon.service';
+import { forwardRef } from '@nestjs/common';
+import { MaestroService } from '../maestro/maestro.service';
 
 @Injectable()
 export class MateriaService {
   constructor(
     @InjectRepository(Materia)
     private materiaRepository: Repository<Materia>,
+    @Inject(forwardRef(() => MaestroService))
     private maestroService: MaestroService,
     private salonService: SalonService,
   ) {}

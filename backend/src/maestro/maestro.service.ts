@@ -1,8 +1,10 @@
-import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
+import { Injectable, Inject, NotFoundException, ConflictException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Maestro } from '../entities/maestro.entity';
 import { CreateMaestroDto } from './dto/create-maestro.dto';
+import { forwardRef } from '@nestjs/common';
+import { MateriaService } from '../materia/materia.service';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
@@ -10,6 +12,9 @@ export class MaestroService {
   constructor(
     @InjectRepository(Maestro)
     private maestroRepository: Repository<Maestro>,
+    // Si necesitas MateriaService, inyéctalo así:
+    @Inject(forwardRef(() => MateriaService))
+    private materiaService: MateriaService,
   ) {}
 
   async create(createMaestroDto: CreateMaestroDto): Promise<Maestro> {

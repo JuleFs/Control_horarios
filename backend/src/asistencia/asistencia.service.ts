@@ -1,136 +1,126 @@
-// src/horario/horario.service.ts
 import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { Horario } from '../entities/horario.entity';
-import { CreateHorarioDto } from '../horario/dto/create-horario.dto';
-import { GrupoService } from '../grupo/grupo.service';
-import { MateriaService } from '../materia/materia.service';
-import { SalonService } from '../salon/salon.service';
+import { Repository, Between } from 'typeorm';
+import { Asistencia } from '../entities/asistencia.entity';
+import { CreateAsistenciaDto } from './dto/create-asistencia.dto';
+import { HorarioService } from '../horario/horario.service';
 
 @Injectable()
-export class HorarioService {
+export class AsistenciaService {
   constructor(
-    @InjectRepository(Horario)
-    private horarioRepository: Repository<Horario>,
-    private grupoService: GrupoService,
-    private materiaService: MateriaService,
-    private salonService: SalonService,
+    @InjectRepository(Asistencia)
+    private asistenciaRepository: Repository<Asistencia>,
+    private horarioService: HorarioService,
   ) {}
 
-  async create(createHorarioDto: CreateHorarioDto): Promise<Horario> {
-    // Verificar si el grupo existe
-    const grupo = await this.grupoService.findOne(createHorarioDto.Grupo_ID);
+  async create(createAsistenciaDto: CreateAsistenciaDto): Promise<Asistencia> {
+    // Verificar si el horario existe
+    const horario = await this.horarioService.findOne(createAsistenciaDto.Horario_ID);
     
-    // Verificar si la materia existe
-    const materia = await this.materiaService.findOne(createHorarioDto.Materia_ID);
-    
-    // Verificar si el salón existe
-    const salon = await this.salonService.findOne(createHorarioDto.Salon_ID);
-    
-    // Verificar si ya existe un horario en el mismo salón, día y hora
-    const existingHorario = await this.horarioRepository.findOne({ 
+    // Verificar si ya existe una asistencia para este horario y fecha
+    const existingAsistencia = await this.asistenciaRepository.findOne({ 
       where: { 
-        Salon: { ID_Salon: salon.ID_Salon },
-        Dias: createHorarioDto.Dias,
-        HoraInicio: createHorarioDto.HoraInicio
+        Horario: { ID: horario.ID },
+        Fecha: createAsistenciaDto.Fecha
       } 
     });
     
-    if (existingHorario) {
-      throw new ConflictException('Ya existe un horario asignado a este salón en ese día y hora');
+    if (existingAsistencia) {
+      throw new ConflictException('Ya existe un registro de asistencia para este horario y fecha');
     }
     
-    // Crear el nuevo horario
-    const horario = this.horarioRepository.create({
-      Grupo: grupo,
-      Materia: materia,
-      Salon: salon,
-      HoraInicio: createHorarioDto.HoraInicio,
-      HoraFin: createHorarioDto.HoraFin,
-      Dias: createHorarioDto.Dias
+    // Crear el nuevo registro de asistencia
+    const asistencia = this.asistenciaRepository.create({
+      Horario: horario,
+      Asistio: createAsistenciaDto.Asistio,
+      Fecha: createAsistenciaDto.Fecha
     });
     
-    return this.horarioRepository.save(horario);
+    return this.asistenciaRepository.save(asistencia);
   }
 
-  async findAll(): Promise<Horario[]> {
-    return this.horarioRepository.find({ 
-      relations: ['Grupo', 'Materia', 'Materia.Maestro', 'Salon', 'asistencias'] 
+  async findAll(): Promise<Asistencia[]> {
+    return this.asistenciaRepository.find({ 
+      relations: ['Horario', 'Horario.Grupo', 'Horario.Materia', 'Horario.Materia.Maestro'] 
     });
   }
 
-  async findOne(id: number): Promise<Horario> {
-    const horario = await this.horarioRepository.findOne({ 
+  async findOne(id: number): Promise<Asistencia> {
+    const asistencia = await this.asistenciaRepository.findOne({ 
       where: { ID: id }, 
-      relations: ['Grupo', 'Materia', 'Materia.Maestro', 'Salon', 'asistencias'] 
+      relations: ['Horario', 'Horario.Grupo', 'Horario.Materia', 'Horario.Materia.Maestro'] 
     });
     
-    if (!horario) {
-      throw new NotFoundException(`Horario con ID ${id} no encontrado`);
+    if (!asistencia) {
+      throw new NotFoundException(`Asistencia con ID ${id} no encontrada`);
     }
     
-    return horario;
+    return asistencia;
   }
   
-  async findByGrupo(grupoId: number): Promise<Horario[]> {
-    return this.horarioRepository.find({
-      where: { Grupo: { ID_Grupo: grupoId } },
-      relations: ['Grupo', 'Materia', 'Materia.Maestro', 'Salon', 'asistencias']
+  async findByHorario(horarioId: number): Promise<Asistencia[]> {
+    return this.asistenciaRepository.find({
+      where: { Horario: { ID: horarioId } },
+      relations: ['Horario', 'Horario.Grupo', 'Horario.Materia', 'Horario.Materia.Maestro']
     });
   }
   
-  async findByMaestroId(maestroId: number): Promise<Horario[]> {
-    return this.horarioRepository.find({
-      where: { Materia: { Maestro: { ID_Maestro: maestroId } } },
-      relations: ['Grupo', 'Materia', 'Materia.Maestro', 'Salon', 'asistencias']
+  async findByFecha(fechaInicio: Date, fechaFin: Date): Promise<Asistencia[]> {
+    return this.asistenciaRepository.find({
+      where: { 
+        Fecha: Between(fechaInicio, fechaFin) 
+      },
+      relations: ['Horario', 'Horario.Grupo', 'Horario.Materia', 'Horario.Materia.Maestro']
+    });
+  }
+  
+  async findByGrupoAndFecha(grupoId: number, fechaInicio: Date, fechaFin: Date): Promise<Asistencia[]> {
+    return this.asistenciaRepository.find({
+      where: { 
+        Horario: { Grupo: { ID_Grupo: grupoId } },
+        Fecha: Between(fechaInicio, fechaFin) 
+      },
+      relations: ['Horario', 'Horario.Grupo', 'Horario.Materia', 'Horario.Materia.Maestro']
+    });
+  }
+  
+  async findByMaestroAndFecha(maestroId: number, fechaInicio: Date, fechaFin: Date): Promise<Asistencia[]> {
+    return this.asistenciaRepository.find({
+      where: { 
+        Horario: { Materia: { Maestro: { ID_Maestro: maestroId } } },
+        Fecha: Between(fechaInicio, fechaFin) 
+      },
+      relations: ['Horario', 'Horario.Grupo', 'Horario.Materia', 'Horario.Materia.Maestro']
     });
   }
 
-  async update(id: number, updateHorarioDto: CreateHorarioDto): Promise<Horario> {
-    const horario = await this.findOne(id);
+  async update(id: number, updateAsistenciaDto: CreateAsistenciaDto): Promise<Asistencia> {
+    const asistencia = await this.findOne(id);
     
-    // Verificar si el grupo existe
-    if (updateHorarioDto.Grupo_ID) {
-      const grupo = await this.grupoService.findOne(updateHorarioDto.Grupo_ID);
-      horario.Grupo = grupo;
+    // Si se está actualizando el horario, verificar que exista
+    if (updateAsistenciaDto.Horario_ID) {
+      const horario = await this.horarioService.findOne(updateAsistenciaDto.Horario_ID);
+      asistencia.Horario = horario;
     }
     
-    // Verificar si la materia existe
-    if (updateHorarioDto.Materia_ID) {
-      const materia = await this.materiaService.findOne(updateHorarioDto.Materia_ID);
-      horario.Materia = materia;
+    // Actualizar estado de asistencia si se proporciona
+    if (updateAsistenciaDto.Asistio !== undefined) {
+      asistencia.Asistio = updateAsistenciaDto.Asistio;
     }
     
-    // Verificar si el salón existe
-    if (updateHorarioDto.Salon_ID) {
-      const salon = await this.salonService.findOne(updateHorarioDto.Salon_ID);
-      horario.Salon = salon;
+    // Actualizar fecha si se proporciona
+    if (updateAsistenciaDto.Fecha) {
+      asistencia.Fecha = updateAsistenciaDto.Fecha;
     }
     
-    // Actualizar hora de inicio si se proporciona
-    if (updateHorarioDto.HoraInicio) {
-      horario.HoraInicio = updateHorarioDto.HoraInicio;
-    }
-    
-    // Actualizar hora de fin si se proporciona
-    if (updateHorarioDto.HoraFin) {
-      horario.HoraFin = updateHorarioDto.HoraFin;
-    }
-    
-    // Actualizar días si se proporciona
-    if (updateHorarioDto.Dias) {
-      horario.Dias = updateHorarioDto.Dias;
-    }
-    
-    return this.horarioRepository.save(horario);
+    return this.asistenciaRepository.save(asistencia);
   }
 
   async remove(id: number): Promise<void> {
-    const result = await this.horarioRepository.delete(id);
+    const result = await this.asistenciaRepository.delete(id);
     
     if (result.affected === 0) {
-      throw new NotFoundException(`Horario con ID ${id} no encontrado`);
+      throw new NotFoundException(`Asistencia con ID ${id} no encontrada`);
     }
   }
 }
