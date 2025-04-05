@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import MainLayout from '../../components/layout/MainLayout';
-import axiosInstance from '../../api/axios';
+import MainLayout from '../../components/layout/MainLayout.tsx';
+import axiosInstance from '../../api/axios.ts';
 import {
   Typography,
   Tabs,
@@ -35,7 +35,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
 import { SelectChangeEvent } from '@mui/material/Select';
-import { UserRole } from '../../types/auth.types';
+import { UserRole } from '../../types/auth.types.ts';
 
 // Interface definitions for different user types
 interface Admin {

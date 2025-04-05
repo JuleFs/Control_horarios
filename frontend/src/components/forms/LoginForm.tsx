@@ -1,8 +1,8 @@
 import React from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
-import { LoginCredentials, UserRole } from '../../types/auth.types';
-import { useAuth } from '../../contexts/AuthContext';
+import { LoginCredentials, UserRole } from '../../types/auth.types.ts';
+import { useAuth } from '../../contexts/AuthContext.tsx';
 import { 
   Button, 
   TextField, 

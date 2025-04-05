@@ -1,5 +1,5 @@
 // src/pages/maestro/ReportesGrupo.tsx
-import React, { useState } from 'react';
+/*import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import MainLayout from '../../components/layout/MainLayout';
 import axiosInstance from '../../api/axios';
@@ -336,7 +336,8 @@ const ReportesGrupo: React.FC = () => {
         </Box>
       ) : asistencias && asistencias.length > 0 ? (
         <>
-          {/* Overall Stats */}
+          {/* Overall Stats }*/
+          /*
           <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, mb: 4 }}>
             <Card sx={{ flexGrow: 1, minWidth: '220px' }}>
               <CardContent>
@@ -402,7 +403,8 @@ const ReportesGrupo: React.FC = () => {
             </Card>
           </Box>
           
-          {/* Student Attendance Stats */}
+          {/* Student Attendance Stats */
+          /*
           <Paper sx={{ p: 2, mb: 4 }}>
             <Typography variant="h6" gutterBottom>
               Asistencia por Estudiante
@@ -455,7 +457,7 @@ const ReportesGrupo: React.FC = () => {
             </TableContainer>
           </Paper>
           
-          {/* Attendance by Date */}
+          {/* Attendance by Date 
           <Paper sx={{ p: 2 }}>
             <Typography variant="h6" gutterBottom>
               Detalle de Asistencias por Fecha
@@ -524,3 +526,4 @@ const ReportesGrupo: React.FC = () => {
 };
 
 export default ReportesGrupo;
+*/

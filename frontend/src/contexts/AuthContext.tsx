@@ -1,8 +1,8 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { AuthState, LoginCredentials, User, UserRole } from '../types/auth.types';
-import { authService } from '../api/auth.service';
-import { getAuth, setAuth } from '../utils/localStorage';
+import { AuthState, LoginCredentials, User, UserRole } from '../types/auth.types.ts';
+import { authService } from '../api/auth.service.ts';
+import { getAuth, setAuth } from '../utils/localStorage.ts';
 import { jwtDecode } from 'jwt-decode';
 
 interface AuthContextType {

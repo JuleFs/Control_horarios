@@ -1,4 +1,3 @@
-// src/pages/Login.tsx
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
@@ -17,8 +16,8 @@ import {
   CircularProgress,
   Alert,
 } from '@mui/material';
-import { UserRole } from '../types/auth.types';
-import { useAuth } from '../contexts/AuthContext';
+import { UserRole } from '../types/auth.types.ts';
+import { useAuth } from '../contexts/AuthContext.tsx';
 import SchoolIcon from '@mui/icons-material/School';
 
 // Define el esquema de validación usando Yup
