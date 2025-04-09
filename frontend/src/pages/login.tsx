@@ -37,8 +37,17 @@ const Login: React.FC = () => {
   const { login, isLoading, error } = useAuth();
   const navigate = useNavigate();
 
-  const handleSubmit = async (values: { correo: string; contraseña: string; userType: UserRole }) => {
-    await login(values);
+  // El problema puede estar aquí - este manejo directo podría causar la recarga
+  const handleSubmit = async (values: { correo: string; contraseña: string; userType: UserRole }, { setSubmitting }: { setSubmitting: (isSubmitting: boolean) => void }) => {
+    try {
+      await login(values);
+      // No es necesario navegar aquí, ya que el contexto se encarga de la redirección
+    } catch (e) {
+      // El error ya se maneja en el contexto de autenticación
+      console.log("Error en inicio de sesión:", e);
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -85,7 +94,7 @@ const Login: React.FC = () => {
           validationSchema={LoginSchema}
           onSubmit={handleSubmit}
         >
-          {({ errors, touched, handleChange, values }) => (
+          {({ errors, touched, handleChange, values, isSubmitting }) => (
             <Form>
               <TextField
                 fullWidth
@@ -143,7 +152,7 @@ const Login: React.FC = () => {
                 fullWidth 
                 variant="contained" 
                 sx={{ mt: 3, mb: 2, py: 1.5 }}
-                disabled={isLoading}
+                disabled={isLoading || isSubmitting}
               >
                 {isLoading ? <CircularProgress size={24} /> : 'Iniciar Sesión'}
               </Button>

@@ -35,7 +35,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       try {
        // Asumiendo que tienes un token en auth.token
        const decoded = jwtDecode<any>(auth.token);
-        const currentTime = Date.now() / 1000;
+        const currentTime = Date.now() / 10000;
         
         if (decoded.exp && decoded.exp > currentTime) {
           setAuthState(auth);
@@ -70,6 +70,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       redirectBasedOnRole(response.user.userType);
     } catch (err: any) {
       setError(err.response?.data?.message || 'Login failed. Please try again.');
+      // Asegúrate de NO redirigir ni hacer nada aquí que pueda causar una recarga
     } finally {
       setIsLoading(false);
     }

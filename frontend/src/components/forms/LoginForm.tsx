@@ -1,5 +1,5 @@
 import React from 'react';
-import { Formik, Form, Field, ErrorMessage } from 'formik';
+import { Formik, Form, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { LoginCredentials, UserRole } from '../../types/auth.types.ts';
 import { useAuth } from '../../contexts/AuthContext.tsx';
@@ -14,7 +14,8 @@ import {
   CircularProgress,
   Typography,
   Box,
-  Paper
+  Paper,
+  Alert
 } from '@mui/material';
 
 const LoginSchema = Yup.object().shape({
@@ -48,15 +49,28 @@ const LoginForm: React.FC = () => {
           Log in to access your account
         </Typography>
         
+        {error && (
+          <Alert severity="error" sx={{ mb: 2 }}>
+            {error}
+          </Alert>
+        )}
+        
         <Formik
           initialValues={initialValues}
           validationSchema={LoginSchema}
-          onSubmit={async (values) => {
-            await login(values);
+          onSubmit={async (values, { setSubmitting }) => {
+            try {
+              await login(values);
+            } catch (e) {
+              // Error ya manejado por el contexto de autenticación
+              console.log("Error en inicio de sesión:", e);
+            } finally {
+              setSubmitting(false);
+            }
           }}
         >
-          {({ errors, touched, handleChange, values }) => (
-            <Form>
+          {({ errors, touched, handleChange, handleSubmit, values, isSubmitting }) => (
+            <Form onSubmit={handleSubmit}>
               <TextField
                 fullWidth
                 id="correo"
@@ -104,18 +118,12 @@ const LoginForm: React.FC = () => {
                 )}
               </FormControl>
               
-              {error && (
-                <Typography color="error" variant="body2" sx={{ mt: 2 }}>
-                  {error}
-                </Typography>
-              )}
-              
               <Button 
                 type="submit" 
                 fullWidth 
                 variant="contained" 
                 sx={{ mt: 3, mb: 2 }}
-                disabled={isLoading}
+                disabled={isLoading || isSubmitting}
               >
                 {isLoading ? <CircularProgress size={24} /> : 'Login'}
               </Button>

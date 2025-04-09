@@ -15,15 +15,12 @@ import { LocalStrategy } from './strategies/local.strategy';
   imports: [
     ConfigModule,
     PassportModule,
-    JwtModule.registerAsync({
-      imports: [ConfigModule],
-      inject: [ConfigService],
-      useFactory: async (configService: ConfigService) => ({
-        secret: configService.get('JWT_SECRET'),
-        signOptions: {
-          expiresIn: configService.get('JWT_EXPIRATION', '1d'),
-        },
-      }),
+    // Usar un valor directo en lugar de cargar desde ConfigService
+    JwtModule.register({
+      secret: 'tu_clave_secreta_jwt',
+      signOptions: {
+        expiresIn: '1d',
+      },
     }),
     AlumnoModule,
     MaestroModule,

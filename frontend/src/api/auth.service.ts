@@ -1,10 +1,14 @@
+import { LoginCredentials, LoginResponse } from '../types/auth.types.ts';
 import axiosInstance from './axios.ts';
-import { LoginCredentials, LoginResponse } from '../types/auth.types.tsx';
-
 export const authService = {
   login: async (credentials: LoginCredentials): Promise<LoginResponse> => {
-    const response = await axiosInstance.post<LoginResponse>('/auth/login', credentials);
-    return response.data;
+    try {
+      const response = await axiosInstance.post<LoginResponse>('/auth/login', credentials);
+      return response.data;
+    } catch (error) {
+      // Simplemente relanzar el error para que AuthContext lo maneje
+      throw error;
+    }
   },
   
   logout: (): void => {
