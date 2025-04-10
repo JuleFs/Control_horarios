@@ -68,11 +68,11 @@ const AdminDashboard: React.FC = () => {
       // This would be a real endpoint in a production app
       // For now, we'll return mock data
       return [
-        { id: 1, action: 'Created', target: 'New student: Ana García', date: '2023-01-15T10:30:00', user: 'Admin' },
-        { id: 2, action: 'Modified', target: 'Schedule for Group A', date: '2023-01-14T14:20:00', user: 'Admin' },
-        { id: 3, action: 'Deleted', target: 'Course: Introduction to Physics', date: '2023-01-13T09:15:00', user: 'Admin' },
-        { id: 4, action: 'Created', target: 'New teacher: Carlos Hernández', date: '2023-01-12T11:45:00', user: 'Admin' },
-        { id: 5, action: 'Modified', target: 'Classroom 101', date: '2023-01-11T16:30:00', user: 'Admin' },
+        { id: 1, action: 'Created', target: 'Registro de Estudiante: Ana García', date: '2023-01-15T10:30:00', user: 'Admin' },
+        { id: 2, action: 'Modified', target: 'Horario para grupo 4-01 Software', date: '2023-01-14T14:20:00', user: 'Admin' },
+        { id: 3, action: 'Deleted', target: 'Materia: Teoria de la Computacion', date: '2023-01-13T09:15:00', user: 'Admin' },
+        { id: 4, action: 'Created', target: 'Registro de Maestro: Mirsa Paolo', date: '2023-01-12T11:45:00', user: 'Admin' },
+        { id: 5, action: 'Modified', target: 'Registro de Salon: Aula 16', date: '2023-01-11T16:30:00', user: 'Admin' },
       ] as RecentActivity[];
     }
   });
@@ -92,7 +92,7 @@ const AdminDashboard: React.FC = () => {
   return (
     <MainLayout>
       <Typography variant="h4" gutterBottom>
-        Admin Dashboard
+        Panel de Administrador
       </Typography>
       
       {/* Statistics Cards */}
@@ -121,12 +121,12 @@ const AdminDashboard: React.FC = () => {
                     <Avatar sx={{ bgcolor: 'primary.main', mr: 2 }}>
                       <PersonIcon />
                     </Avatar>
-                    <Typography variant="h6">Students</Typography>
+                    <Typography variant="h6">Estudiantes</Typography>
                   </Box>
                   <Typography variant="h3">{stats?.alumnosCount}</Typography>
                 </CardContent>
                 <CardActions>
-                  <Button size="small" component={Link} to="/admin/alumnos">Manage Students</Button>
+                  <Button size="small" component={Link} to="/admin/alumnos">Administrar Estudiantes</Button>
                 </CardActions>
               </Card>
             </Box>
@@ -145,12 +145,12 @@ const AdminDashboard: React.FC = () => {
                     <Avatar sx={{ bgcolor: 'secondary.main', mr: 2 }}>
                       <SchoolIcon />
                     </Avatar>
-                    <Typography variant="h6">Teachers</Typography>
+                    <Typography variant="h6">Maestros</Typography>
                   </Box>
                   <Typography variant="h3">{stats?.maestrosCount}</Typography>
                 </CardContent>
                 <CardActions>
-                  <Button size="small" component={Link} to="/admin/maestros">Manage Teachers</Button>
+                  <Button size="small" component={Link} to="/admin/maestros">Administrar Maestros</Button>
                 </CardActions>
               </Card>
             </Box>
@@ -169,12 +169,12 @@ const AdminDashboard: React.FC = () => {
                     <Avatar sx={{ bgcolor: 'success.main', mr: 2 }}>
                       <GroupIcon />
                     </Avatar>
-                    <Typography variant="h6">Groups</Typography>
+                    <Typography variant="h6">Grupos</Typography>
                   </Box>
                   <Typography variant="h3">{stats?.gruposCount}</Typography>
                 </CardContent>
                 <CardActions>
-                  <Button size="small" component={Link} to="/admin/grupos">Manage Groups</Button>
+                  <Button size="small" component={Link} to="/admin/grupos">Administrar Grupos</Button>
                 </CardActions>
               </Card>
             </Box>
@@ -193,12 +193,12 @@ const AdminDashboard: React.FC = () => {
                     <Avatar sx={{ bgcolor: 'error.main', mr: 2 }}>
                       <MeetingRoomIcon />
                     </Avatar>
-                    <Typography variant="h6">Classrooms</Typography>
+                    <Typography variant="h6">Salones</Typography>
                   </Box>
                   <Typography variant="h3">{stats?.salonesCount}</Typography>
                 </CardContent>
                 <CardActions>
-                  <Button size="small" component={Link} to="/admin/salones">Manage Classrooms</Button>
+                  <Button size="small" component={Link} to="/admin/salones">Administrar Salones</Button>
                 </CardActions>
               </Card>
             </Box>
@@ -217,12 +217,12 @@ const AdminDashboard: React.FC = () => {
                     <Avatar sx={{ bgcolor: 'warning.main', mr: 2 }}>
                       <ClassIcon />
                     </Avatar>
-                    <Typography variant="h6">Subjects</Typography>
+                    <Typography variant="h6">Materias</Typography>
                   </Box>
                   <Typography variant="h3">{stats?.materiasCount}</Typography>
                 </CardContent>
                 <CardActions>
-                  <Button size="small" component={Link} to="/admin/materias">Manage Subjects</Button>
+                  <Button size="small" component={Link} to="/admin/materias">Administrar Materias</Button>
                 </CardActions>
               </Card>
             </Box>
@@ -241,12 +241,12 @@ const AdminDashboard: React.FC = () => {
                     <Avatar sx={{ bgcolor: 'info.main', mr: 2 }}>
                       <TimelineIcon />
                     </Avatar>
-                    <Typography variant="h6">Attendance Checkers</Typography>
+                    <Typography variant="h6">Checadores de Asistencia</Typography>
                   </Box>
                   <Typography variant="h3">{stats?.checadoresCount}</Typography>
                 </CardContent>
                 <CardActions>
-                  <Button size="small" component={Link} to="/admin/checadores">Manage Checkers</Button>
+                  <Button size="small" component={Link} to="/admin/checadores">Administrar Checadores</Button>
                 </CardActions>
               </Card>
             </Box>
@@ -300,7 +300,7 @@ const AdminDashboard: React.FC = () => {
       {/* Quick Actions */}
       <Paper sx={{ p: 2 }}>
         <Typography variant="h5" gutterBottom>
-          Quick Actions
+          Acciones Rapidas
         </Typography>
         <Box sx={{ 
           display: 'flex', 
@@ -323,7 +323,7 @@ const AdminDashboard: React.FC = () => {
               to="/admin/alumnos/new"
               startIcon={<PersonIcon />}
             >
-              Add New Student
+              Añadir Estudiante
             </Button>
           </Box>
           
@@ -343,7 +343,7 @@ const AdminDashboard: React.FC = () => {
               to="/admin/maestros/new"
               startIcon={<SchoolIcon />}
             >
-              Add New Teacher
+              Añadir Maestro
             </Button>
           </Box>
           
@@ -363,7 +363,7 @@ const AdminDashboard: React.FC = () => {
               to="/admin/horarios/new"
               startIcon={<TimelineIcon />}
             >
-              Create Schedule
+              Registrar Horario
             </Button>
           </Box>
           
@@ -383,7 +383,7 @@ const AdminDashboard: React.FC = () => {
               to="/admin/reportes"
               startIcon={<TimelineIcon />}
             >
-              View Reports
+              Generar Reportes
             </Button>
           </Box>
         </Box>

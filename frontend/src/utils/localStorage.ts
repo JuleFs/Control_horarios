@@ -11,5 +11,5 @@ export const getAuth = (): AuthState | null => {
 
 export const getToken = (): string | null => {
   const auth = getAuth();
-  return auth ? auth.token : null;
+  return auth?.token || null;
 };

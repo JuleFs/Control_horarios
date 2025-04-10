@@ -33,23 +33,23 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     if (auth && auth.token) {
       // Verify token expiration
       try {
-       // Asumiendo que tienes un token en auth.token
-       const decoded = jwtDecode<any>(auth.token);
-        const currentTime = Date.now() / 10000;
+        const decoded = jwtDecode<any>(auth.token);
+        const currentTime = Date.now() / 1000;
         
         if (decoded.exp && decoded.exp > currentTime) {
           setAuthState(auth);
         } else {
           // Token expired
           localStorage.removeItem('auth');
+          setAuthState(initialAuthState);
         }
       } catch (e) {
         // Invalid token
         localStorage.removeItem('auth');
+        setAuthState(initialAuthState);
       }
     }
   }, []);
-
   const login = async (credentials: LoginCredentials) => {
     setIsLoading(true);
     setError(null);
@@ -96,8 +96,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       case UserRole.CHECADOR:
         navigate('/checador/dashboard');
         break;
-      default:
-        navigate('/login');
     }
   };
 

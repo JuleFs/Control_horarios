@@ -100,7 +100,7 @@ const AlumnoHorarios: React.FC = () => {
   const groupByDay = () => {
     if (!horarios) return {};
     
-    const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    const days = ['Domingo', 'Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sábado'];
     return horarios.reduce((acc, horario) => {
       const dayOfWeek = new Date(horario.Dias).getDay();
       const day = days[dayOfWeek];
@@ -129,7 +129,7 @@ const AlumnoHorarios: React.FC = () => {
   return (
     <MainLayout>
       <Typography variant="h4" gutterBottom>
-        My Schedule
+        Horario
       </Typography>
       
       {isLoading ? (
@@ -137,7 +137,7 @@ const AlumnoHorarios: React.FC = () => {
           <CircularProgress />
         </Box>
       ) : error ? (
-        <Alert severity="error">Error loading schedule</Alert>
+        <Alert severity="error">Error al Intentar Cargar los Horarios</Alert>
       ) : (
         <>
           {Object.entries(scheduleByDay).map(([day, dayHorarios]) => (
@@ -149,11 +149,11 @@ const AlumnoHorarios: React.FC = () => {
                 <Table>
                   <TableHead>
                     <TableRow>
-                      <TableCell>Subject</TableCell>
-                      <TableCell>Time</TableCell>
-                      <TableCell>Teacher</TableCell>
-                      <TableCell>Room</TableCell>
-                      <TableCell>Actions</TableCell>
+                      <TableCell>Materia</TableCell>
+                      <TableCell>Hora</TableCell>
+                      <TableCell>Maestro</TableCell>
+                      <TableCell>Salon</TableCell>
+                      <TableCell>Acciones</TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
@@ -171,7 +171,7 @@ const AlumnoHorarios: React.FC = () => {
                             // Only enable for today's classes
                             disabled={new Date(horario.Dias).getDay() !== new Date().getDay()}
                           >
-                            Register Attendance
+                            Registrar Asistencia
                           </Button>
                         </TableCell>
                       </TableRow>
@@ -184,7 +184,7 @@ const AlumnoHorarios: React.FC = () => {
           
           {/* Check if there are no classes scheduled */}
           {Object.keys(scheduleByDay).length === 0 && (
-            <Alert severity="info">No classes have been scheduled for you yet.</Alert>
+            <Alert severity="info">Aun no tienes clases programadas.</Alert>
           )}
           
           {/* Attendance Confirmation Dialog */}
@@ -195,11 +195,11 @@ const AlumnoHorarios: React.FC = () => {
             <DialogTitle>Confirm Attendance</DialogTitle>
             <DialogContent>
               <DialogContentText>
-                Are you sure you want to register your attendance for {selectedHorario?.Materia.Nombre}?
+                Quieres registrar la asistencia para {selectedHorario?.Materia.Nombre}?
               </DialogContentText>
             </DialogContent>
             <DialogActions>
-              <Button onClick={() => setOpenDialog(false)}>Cancel</Button>
+              <Button onClick={() => setOpenDialog(false)}>Cancelar</Button>
               <Button 
                 onClick={confirmAttendance} 
                 variant="contained"

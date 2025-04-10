@@ -16,11 +16,13 @@ import { LocalStrategy } from './strategies/local.strategy';
     ConfigModule,
     PassportModule,
     // Usar un valor directo en lugar de cargar desde ConfigService
-    JwtModule.register({
-      secret: 'tu_clave_secreta_jwt',
-      signOptions: {
-        expiresIn: '1d',
-      },
+    JwtModule.registerAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        secret: configService.get<string>('JWT_SECRET') || 'tu_clave_secreta_jwt',
+        signOptions: { expiresIn: '1d' },
+      }),
     }),
     AlumnoModule,
     MaestroModule,

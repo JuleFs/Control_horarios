@@ -36,25 +36,23 @@ const LoginForm: React.FC = () => {
   const initialValues: LoginCredentials = {
     correo: '',
     contraseña: '',
-    userType: UserRole.ALUMNO, // Default selection
+    userType: UserRole.ALUMNO,
   };
 
   return (
     <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
       <Paper elevation={3} sx={{ p: 4, width: '100%', maxWidth: 400 }}>
         <Typography variant="h5" align="center" gutterBottom>
-          School Management System
+          Sistema de Administracion Escolar 
         </Typography>
         <Typography variant="body1" align="center" sx={{ mb: 3 }}>
-          Log in to access your account
+          Inicia Sesion Para Acceder a tu Cuenta
         </Typography>
-        
         {error && (
           <Alert severity="error" sx={{ mb: 2 }}>
             {error}
           </Alert>
         )}
-        
         <Formik
           initialValues={initialValues}
           validationSchema={LoginSchema}

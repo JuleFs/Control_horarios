@@ -10,11 +10,12 @@ const axiosInstance = axios.create({
   },
 });
 
-// Add a request interceptor to include auth token in requests
+
 axiosInstance.interceptors.request.use(
   (config) => {
     const token = getToken();
     if (token) {
+      // Asegúrate que las cabeceras se establecen correctamente
       config.headers.Authorization = `Bearer ${token}`;
     }
     return config;

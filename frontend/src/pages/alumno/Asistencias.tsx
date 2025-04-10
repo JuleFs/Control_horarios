@@ -102,7 +102,7 @@ const AlumnoAsistencias: React.FC = () => {
           <CircularProgress />
         </Box>
       ) : error ? (
-        <Alert severity="error">Error loading attendance records</Alert>
+        <Alert severity="error">Error en la Carga de las Asistencias</Alert>
       ) : (
         <>
           {/* Statistics Cards */}
@@ -166,7 +166,7 @@ const AlumnoAsistencias: React.FC = () => {
                 label="Filter by Subject"
                 onChange={handleFilterChange}
               >
-                <MenuItem value="all">All Subjects</MenuItem>
+                <MenuItem value="all">Materias</MenuItem>
                 {subjects.map(subject => (
                   <MenuItem key={subject} value={subject}>{subject}</MenuItem>
                 ))}
@@ -179,19 +179,19 @@ const AlumnoAsistencias: React.FC = () => {
             <Table>
               <TableHead>
                 <TableRow>
-                  <TableCell>Date</TableCell>
-                  <TableCell>Subject</TableCell>
-                  <TableCell>Time</TableCell>
-                  <TableCell>Room</TableCell>
-                  <TableCell>Status</TableCell>
-                  <TableCell>Registered On</TableCell>
+                  <TableCell>Fecha</TableCell>
+                  <TableCell>Materia</TableCell>
+                  <TableCell>Hora</TableCell>
+                  <TableCell>Salon</TableCell>
+                  <TableCell>Estado</TableCell>
+                  <TableCell>Registrado en</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
                 {filteredAsistencias.length === 0 ? (
                   <TableRow>
                     <TableCell colSpan={6} align="center">
-                      No attendance records found
+                      Sin Asistencias Registradas
                     </TableCell>
                   </TableRow>
                 ) : (

@@ -99,7 +99,7 @@ const AlumnoDashboard: React.FC = () => {
           <Card sx={{ height: '100%' }}>
             <CardContent>
               <Typography variant="h6" gutterBottom>
-                Attendance Rate
+                Porcentaje de Asistencia
               </Typography>
               <Box sx={{ display: 'flex', alignItems: 'center' }}>
                 <Box sx={{ position: 'relative', display: 'inline-flex', mr: 2 }}>
@@ -134,7 +134,7 @@ const AlumnoDashboard: React.FC = () => {
             </CardContent>
             <CardActions>
               <Button size="small" component={Link} to="/alumno/asistencias">
-                View Details
+                Detalles
               </Button>
             </CardActions>
           </Card>
@@ -145,7 +145,7 @@ const AlumnoDashboard: React.FC = () => {
           <Card sx={{ height: '100%' }}>
             <CardContent>
               <Typography variant="h6" gutterBottom>
-                Today's Classes
+                Clases de Hoy
               </Typography>
               <Typography variant="h4">
                 {todaySchedule.length}
@@ -156,7 +156,7 @@ const AlumnoDashboard: React.FC = () => {
             </CardContent>
             <CardActions>
               <Button size="small" component={Link} to="/alumno/horarios">
-                View Schedule
+                Ver Horario
               </Button>
             </CardActions>
           </Card>
@@ -167,7 +167,7 @@ const AlumnoDashboard: React.FC = () => {
           <Card sx={{ height: '100%' }}>
             <CardContent>
               <Typography variant="h6" gutterBottom>
-                Next Class
+                Siguiente Clase
               </Typography>
               {todaySchedule.length > 0 ? (
                 <>
@@ -183,7 +183,7 @@ const AlumnoDashboard: React.FC = () => {
                 </>
               ) : (
                 <Typography variant="body2" color="text.secondary">
-                  No classes scheduled for today
+                  Sin Clases Asignadas para hoy
                 </Typography>
               )}
             </CardContent>
@@ -195,7 +195,7 @@ const AlumnoDashboard: React.FC = () => {
       <Paper sx={{ p: 2 }}>
         <Typography variant="h5" gutterBottom>
           <CalendarTodayIcon sx={{ mr: 1, verticalAlign: 'middle' }} />
-          Today's Schedule
+          Horario de Hoy
         </Typography>
         
         {horariosLoading ? (
@@ -206,7 +206,7 @@ const AlumnoDashboard: React.FC = () => {
           <Alert severity="error">Error loading schedules</Alert>
         ) : todaySchedule.length === 0 ? (
           <Typography variant="body1" sx={{ p: 2 }}>
-            No classes scheduled for today.
+            Sin Clases Asignadas para hoy
           </Typography>
         ) : (
           <Box sx={{ 
@@ -228,10 +228,10 @@ const AlumnoDashboard: React.FC = () => {
                       {horario.HoraInicio} - {horario.HoraFin}
                     </Typography>
                     <Typography variant="body2">
-                      Teacher: {horario.Materia.Maestro.Nombre}
+                      Maestro: {horario.Materia.Maestro.Nombre}
                     </Typography>
                     <Typography variant="body2">
-                      Room: {horario.Salon.Nombre}
+                      Salon: {horario.Salon.Nombre}
                     </Typography>
                   </CardContent>
                 </Card>
