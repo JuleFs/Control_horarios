@@ -31,11 +31,12 @@ axiosInstance.interceptors.response.use(
     return response;
   },
   (error) => {
+    console.log("Axios response error:", error.response);
     if (error.response && error.response.status === 401) {
-      // Token expired or invalid
-      // Clear local storage and redirect to login
+      console.log("Received 401 unauthorized, redirecting to login");
       localStorage.removeItem('auth');
-      window.location.href = '/login';
+      //window.location.href = '/login';
+      console.error ("Error de Autenticacion, pero NO Direccionado")
     }
     return Promise.reject(error);
   }

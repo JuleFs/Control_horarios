@@ -10,13 +10,16 @@ interface ProtectedRouteProps {
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ allowedRoles }) => {
   const { authState } = useAuth();
   
+  console.log("Protected Route Auth State:", authState);
+  
   if (!authState.isAuthenticated) {
-    return <Navigate to="/login" replace />;
+    console.log("Not authenticated, redirecting to login");
+    //return <Navigate to="/login" replace />;
   }
   
   if (authState.user && !allowedRoles.includes(authState.user.userType)) {
-    // User is logged in but doesn't have permission
-    // Redirect to their appropriate dashboard
+    console.log("Usuario no permitido:", authState.user.userType);
+    // Redirect to appropriate dashboard
     switch (authState.user.userType) {
       case UserRole.ADMIN:
         return <Navigate to="/admin/dashboard" replace />;
@@ -26,12 +29,10 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ allowedRoles }) => {
         return <Navigate to="/maestro/dashboard" replace />;
       case UserRole.CHECADOR:
         return <Navigate to="/checador/dashboard" replace />;
-      default:
-        return <Navigate to="/login" replace />;
     }
   }
   
-  // If authorized, render the child routes
+  console.log("Access granted to protected route");
   return <Outlet />;
 };
 

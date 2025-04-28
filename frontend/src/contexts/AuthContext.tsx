@@ -4,6 +4,7 @@ import { AuthState, LoginCredentials, User, UserRole } from '../types/auth.types
 import { authService } from '../api/auth.service.ts';
 import { getAuth, setAuth } from '../utils/localStorage.ts';
 import { jwtDecode } from 'jwt-decode';
+import axiosInstance from '../api/axios.ts';
 
 interface AuthContextType {
   authState: AuthState;
@@ -34,19 +35,27 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       // Verify token expiration
       try {
         const decoded = jwtDecode<any>(auth.token);
-        const currentTime = Date.now() / 1000;
+        const currentTime = Date.now() / 1000; 
         
+        console.log("Token expiration:", decoded.exp);
+        console.log("Current time:", currentTime);
+        console.log("Is token valid:", decoded.exp > currentTime);
+          
         if (decoded.exp && decoded.exp > currentTime) {
+          console.log("Setting auth state from stored token");
           setAuthState(auth);
+          
+          // Ensure token is attached to future requests
+          axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${auth.token}`;
         } else {
+          console.log("Token expired, removing from storage");
           // Token expired
           localStorage.removeItem('auth');
-          setAuthState(initialAuthState);
         }
       } catch (e) {
+        console.error("Error decoding token:", e);
         // Invalid token
         localStorage.removeItem('auth');
-        setAuthState(initialAuthState);
       }
     }
   }, []);
@@ -66,11 +75,9 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       setAuthState(newAuthState);
       setAuth(newAuthState);
       
-      // Redirect based on user role
       redirectBasedOnRole(response.user.userType);
     } catch (err: any) {
       setError(err.response?.data?.message || 'Login failed. Please try again.');
-      // Asegúrate de NO redirigir ni hacer nada aquí que pueda causar una recarga
     } finally {
       setIsLoading(false);
     }

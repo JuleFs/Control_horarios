@@ -44,12 +44,9 @@ interface RecentActivity {
 }
 
 const AdminDashboard: React.FC = () => {
-  // Fetch statistics
   const { data: stats, isLoading: statsLoading } = useQuery({
     queryKey: ['admin', 'stats'],
     queryFn: async () => {
-      // This would be a real endpoint in a production app
-      // For now, we'll return mock data
       return {
         alumnosCount: 150,
         maestrosCount: 25,
@@ -65,8 +62,6 @@ const AdminDashboard: React.FC = () => {
   const { data: recentActivity, isLoading: activityLoading } = useQuery({
     queryKey: ['admin', 'activity'],
     queryFn: async () => {
-      // This would be a real endpoint in a production app
-      // For now, we'll return mock data
       return [
         { id: 1, action: 'Created', target: 'Registro de Estudiante: Ana García', date: '2023-01-15T10:30:00', user: 'Admin' },
         { id: 2, action: 'Modified', target: 'Horario para grupo 4-01 Software', date: '2023-01-14T14:20:00', user: 'Admin' },
@@ -77,7 +72,6 @@ const AdminDashboard: React.FC = () => {
     }
   });
   
-  // Format date for display
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return new Intl.DateTimeFormat('en-US', {
@@ -126,7 +120,7 @@ const AdminDashboard: React.FC = () => {
                   <Typography variant="h3">{stats?.alumnosCount}</Typography>
                 </CardContent>
                 <CardActions>
-                  <Button size="small" component={Link} to="/admin/alumnos">Administrar Estudiantes</Button>
+                  <Button size="small" component={Link} to="/AlumnoManagement">Administrar Estudiantes</Button>
                 </CardActions>
               </Card>
             </Box>
@@ -150,7 +144,7 @@ const AdminDashboard: React.FC = () => {
                   <Typography variant="h3">{stats?.maestrosCount}</Typography>
                 </CardContent>
                 <CardActions>
-                  <Button size="small" component={Link} to="/admin/maestros">Administrar Maestros</Button>
+                  <Button size="small" component={Link} to="/admin/MaestrosManagement">Administrar Maestros</Button>
                 </CardActions>
               </Card>
             </Box>
@@ -257,7 +251,7 @@ const AdminDashboard: React.FC = () => {
       {/* Recent Activity */}
       <Paper sx={{ p: 2, mb: 4 }}>
         <Typography variant="h5" gutterBottom>
-          Recent Activity
+          Actividad Reciente
         </Typography>
         
         {activityLoading ? (

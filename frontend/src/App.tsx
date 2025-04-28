@@ -10,6 +10,9 @@ import LoginPage from './pages/login.tsx';
 // Admin Pages
 import AdminDashboard from './pages/admin/AdminDashboard.tsx';
 import AdminUsers from './pages/admin/UserManagement.tsx';
+import Grupo from "./pages/admin/Grupo.Management.tsx";
+import Maestros from "./pages/admin/MaestrosManagement.tsx"
+
 // Student Pages
 import AlumnoDashboard from './pages/alumno/AlumnoDashboard.tsx';
 import AlumnoHorarios from './pages/alumno/Horarios.tsx';
@@ -40,6 +43,8 @@ const App: React.FC = () => {
             <Route element={<ProtectedRoute allowedRoles={[UserRole.ADMIN]} />}>
               <Route path="/admin/dashboard" element={<AdminDashboard />} />
               <Route path="/admin/users" element={<AdminUsers />} />
+              <Route path="/admin/grupo" element={<Grupo />} />
+              <Route path="/admin/maestros" element={<Maestros />} />
             </Route>
             
             {/* Student routes */}

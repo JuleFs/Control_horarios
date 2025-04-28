@@ -1,8 +1,8 @@
 // src/pages/admin/GrupoManagement.tsx
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import MainLayout from '../../components/layout/MainLayout';
-import axiosInstance from '../../api/axios';
+import MainLayout from '../../components/layout/MainLayout.tsx';
+import axiosInstance from '../../api/axios.ts';
 import {
   Typography,
   Paper,

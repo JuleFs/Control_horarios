@@ -20,12 +20,13 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  async validate(payload: any) {
-    // Añadir el userType al objeto de usuario que será inyectado en la solicitud
-    return {
-      userId: payload.sub,
-      email: payload.email,
-      userType: payload.userType,
-    };
-  }
+  // backend/src/auth/strategies/jwt-strategy.ts
+async validate(payload: any) {
+  console.log("JWT Payload:", payload);
+  return {
+    userId: payload.sub,
+    email: payload.email,
+    userType: payload.userType,
+  };
+}
 }

@@ -51,37 +51,37 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
     switch (authState.user.userType) {
       case UserRole.ADMIN:
         return [
-          { text: 'Dashboard', icon: <DashboardIcon />, path: '/admin/dashboard' },
-          { text: 'Users', icon: <PeopleIcon />, path: '/admin/users' },
-          { text: 'Groups', icon: <ClassIcon />, path: '/admin/grupos' },
-          { text: 'Teachers', icon: <SchoolIcon />, path: '/admin/maestros' },
-          { text: 'Students', icon: <PeopleIcon />, path: '/admin/alumnos' },
-          { text: 'Subjects', icon: <ClassIcon />, path: '/admin/materias' },
-          { text: 'Classrooms', icon: <MeetingRoomIcon />, path: '/admin/salones' },
-          { text: 'Schedules', icon: <CalendarMonthIcon />, path: '/admin/horarios' },
-          { text: 'Attendance', icon: <CheckCircleOutlineIcon />, path: '/admin/asistencias' },
+          { text: 'Panel', icon: <DashboardIcon />, path: '/admin/dashboard' },
+          { text: 'Usuarios', icon: <PeopleIcon />, path: '/admin/users' },
+          { text: 'Grupos', icon: <ClassIcon />, path: '/admin/grupos' },
+          { text: 'Maestros', icon: <SchoolIcon />, path: '/admin/maestros' },
+          { text: 'Estudiantes', icon: <PeopleIcon />, path: '/admin/alumnos' },
+          { text: 'Materias', icon: <ClassIcon />, path: '/admin/materias' },
+          { text: 'Salones', icon: <MeetingRoomIcon />, path: '/admin/salones' },
+          { text: 'Horarios', icon: <CalendarMonthIcon />, path: '/admin/horarios' },
+          { text: 'Asistencia', icon: <CheckCircleOutlineIcon />, path: '/admin/asistencias' },
         ];
       case UserRole.ALUMNO:
         return [
-          { text: 'Dashboard', icon: <DashboardIcon />, path: '/alumno/dashboard' },
-          { text: 'My Schedule', icon: <CalendarMonthIcon />, path: '/alumno/horarios' },
-          { text: 'My Attendance', icon: <CheckCircleOutlineIcon />, path: '/alumno/asistencias' },
-          { text: 'Profile', icon: <PeopleIcon />, path: '/alumno/profile' },
+          { text: 'Panel', icon: <DashboardIcon />, path: '/alumno/dashboard' },
+          { text: 'Mi Horario', icon: <CalendarMonthIcon />, path: '/alumno/horarios' },
+          { text: 'Mi Asistencia', icon: <CheckCircleOutlineIcon />, path: '/alumno/asistencias' },
+          { text: 'Perfil', icon: <PeopleIcon />, path: '/alumno/profile' },
         ];
       case UserRole.MAESTRO:
         return [
-          { text: 'Dashboard', icon: <DashboardIcon />, path: '/maestro/dashboard' },
-          { text: 'My Subjects', icon: <ClassIcon />, path: '/maestro/materias' },
-          { text: 'My Schedule', icon: <CalendarMonthIcon />, path: '/maestro/horarios' },
-          { text: 'Attendance', icon: <CheckCircleOutlineIcon />, path: '/maestro/asistencias' },
-          { text: 'Profile', icon: <PeopleIcon />, path: '/maestro/profile' },
+          { text: 'Panel', icon: <DashboardIcon />, path: '/maestro/dashboard' },
+          { text: 'Materias', icon: <ClassIcon />, path: '/maestro/materias' },
+          { text: 'Horario', icon: <CalendarMonthIcon />, path: '/maestro/horarios' },
+          { text: 'Asistencia', icon: <CheckCircleOutlineIcon />, path: '/maestro/asistencias' },
+          { text: 'Perfil', icon: <PeopleIcon />, path: '/maestro/profile' },
         ];
       case UserRole.CHECADOR:
         return [
-          { text: 'Dashboard', icon: <DashboardIcon />, path: '/checador/dashboard' },
-          { text: 'Register Attendance', icon: <CheckCircleOutlineIcon />, path: '/checador/register' },
-          { text: 'Attendance Reports', icon: <CheckCircleOutlineIcon />, path: '/checador/reports' },
-          { text: 'Profile', icon: <PeopleIcon />, path: '/checador/profile' },
+          { text: 'Panel', icon: <DashboardIcon />, path: '/checador/dashboard' },
+          { text: 'Registro de Asistencia', icon: <CheckCircleOutlineIcon />, path: '/checador/register' },
+          { text: 'Reportes de Asistencia', icon: <CheckCircleOutlineIcon />, path: '/checador/reports' },
+          { text: 'Perfil', icon: <PeopleIcon />, path: '/checador/profile' },
         ];
       default:
         return [];
@@ -92,7 +92,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
     <div>
       <Toolbar>
         <Typography variant="h6" noWrap component="div">
-          School Management
+          Universidad Autónoma de Sinaloa
         </Typography>
       </Toolbar>
       <Divider />
@@ -108,7 +108,9 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
               <ListItemText primary={item.text} />
             </ListItemButton>
           </ListItem>
-        ))}
+        ))
+        
+        }
       </List>
       <Divider />
       <List>
