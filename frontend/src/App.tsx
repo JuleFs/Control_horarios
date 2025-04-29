@@ -7,24 +7,36 @@ import { UserRole } from './types/auth.types.ts';
 
 // Pages
 import LoginPage from './pages/login.tsx';
+
 // Admin Pages
 import AdminDashboard from './pages/admin/AdminDashboard.tsx';
 import AdminUsers from './pages/admin/UserManagement.tsx';
-import Grupo from "./pages/admin/Grupo.Management.tsx";
-import Maestros from "./pages/admin/MaestrosManagement.tsx"
+import GrupoManagement from './pages/admin/Grupo.Management.tsx';
+import MateriaManagement from './pages/admin/Materia.Management.tsx';
+import SalonManagement from './pages/admin/SalonManagement.tsx';
+import HorarioManagement from './pages/admin/SalonManagement.tsx'; // Reusing the file since it contains HorarioManagement
+import AlumnoManagement from './pages/admin/AlumnoManagement.tsx';
+import MaestroManagement from './pages/admin/MaestrosManagement.tsx';
+import ChecadorManagement from './pages/admin/ChecadorManagement.tsx';
+import AsistenciaReports from './pages/admin/AsistenciaReports.tsx';
+//import AdminProfile from './pages/admin/AdminProfile.tsx';
 
 // Student Pages
 import AlumnoDashboard from './pages/alumno/AlumnoDashboard.tsx';
 import AlumnoHorarios from './pages/alumno/Horarios.tsx';
 import AlumnoAsistencias from './pages/alumno/Asistencias.tsx';
+
 // Teacher Pages
 import MaestroDashboard from './pages/maestro/MaestroDashboard.tsx';
 import MisMaterias from './pages/maestro/MisMaterias.tsx';
+import MaestroHorarios from './pages/maestro/Horarios.tsx';
+import MaestroAsistencias from './pages/maestro/Asistencias.tsx';
 import RegistroAsistencia from './pages/maestro/RegistroAsistencia.tsx';
 
-// Placeholder components with proper TypeScript typing
-const ReportesGrupo: React.FC = () => <div>Reportes Grupo (Placeholder)</div>;
-const ChecadorDashboard: React.FC = () => <div>Checador Dashboard (Placeholder)</div>;
+// Checador Pages
+import ChecadorDashboard from './pages/checador/ChecadorDashboard.tsx';
+import ChecadorRegister from './pages/checador/ChecadorRegister.tsx';
+import ChecadorReports from './pages/checador/ChecadorReports.tsx';
 
 const queryClient: QueryClient = new QueryClient();
 
@@ -43,8 +55,15 @@ const App: React.FC = () => {
             <Route element={<ProtectedRoute allowedRoles={[UserRole.ADMIN]} />}>
               <Route path="/admin/dashboard" element={<AdminDashboard />} />
               <Route path="/admin/users" element={<AdminUsers />} />
-              <Route path="/admin/grupo" element={<Grupo />} />
-              <Route path="/admin/maestros" element={<Maestros />} />
+              <Route path="/admin/grupos" element={<GrupoManagement />} />
+              <Route path="/admin/materias" element={<MateriaManagement />} />
+              <Route path="/admin/salones" element={<SalonManagement />} />
+              <Route path="/admin/horarios" element={<HorarioManagement />} />
+              <Route path="/admin/alumnos" element={<AlumnoManagement />} />
+              <Route path="/admin/maestros" element={<MaestroManagement />} />
+              <Route path="/admin/checadores" element={<ChecadorManagement />} />
+              <Route path="/admin/reportes" element={<AsistenciaReports />} />
+              
             </Route>
             
             {/* Student routes */}
@@ -52,19 +71,25 @@ const App: React.FC = () => {
               <Route path="/alumno/dashboard" element={<AlumnoDashboard />} />
               <Route path="/alumno/horarios" element={<AlumnoHorarios />} />
               <Route path="/alumno/asistencias" element={<AlumnoAsistencias />} />
+              <Route path="/alumno/profile" element={<AlumnoDashboard />} /> {/* Reusing AlumnoDashboard for profile */}
             </Route>
             
             {/* Teacher routes */}
             <Route element={<ProtectedRoute allowedRoles={[UserRole.MAESTRO]} />}>
               <Route path="/maestro/dashboard" element={<MaestroDashboard />} />
               <Route path="/maestro/materias" element={<MisMaterias />} />
+              <Route path="/maestro/horarios" element={<MaestroHorarios />} />
+              <Route path="/maestro/asistencias" element={<MaestroAsistencias />} />
               <Route path="/maestro/asistencias/registrar/:horarioId" element={<RegistroAsistencia />} />
-              <Route path="/maestro/reportes" element={<ReportesGrupo />} />
+              <Route path="/maestro/profile" element={<MaestroDashboard />} /> {/* Reusing MaestroDashboard for profile */}
             </Route>
             
             {/* Checker routes */}
             <Route element={<ProtectedRoute allowedRoles={[UserRole.CHECADOR]} />}>
               <Route path="/checador/dashboard" element={<ChecadorDashboard />} />
+              <Route path="/checador/register" element={<ChecadorRegister />} />
+              <Route path="/checador/reports" element={<ChecadorReports />} />
+              <Route path="/checador/profile" element={<ChecadorDashboard />} /> {/* Reusing ChecadorDashboard for profile */}
             </Route>
             
             {/* Catch all - redirect to login */}

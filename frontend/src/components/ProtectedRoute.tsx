@@ -1,5 +1,5 @@
-import React from 'react';
-import { Navigate, Outlet } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { Navigate, Outlet, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext.tsx';
 import { UserRole } from '../types/auth.types.ts';
 
@@ -9,17 +9,31 @@ interface ProtectedRouteProps {
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ allowedRoles }) => {
   const { authState } = useAuth();
+  const location = useLocation();
   
-  console.log("Protected Route Auth State:", authState);
+  // Log authentication state for debugging
+  useEffect(() => {
+    console.log('ProtectedRoute - Current path:', location.pathname);
+    console.log('ProtectedRoute - Auth state:', {
+      isAuthenticated: authState.isAuthenticated,
+      userType: authState.user?.userType,
+      allowedRoles
+    });
+  }, [authState, allowedRoles, location.pathname]);
   
-  if (!authState.isAuthenticated) {
-    console.log("Not authenticated, redirecting to login");
-    //return <Navigate to="/login" replace />;
+  // Check if user is authenticated
+  if (!authState.isAuthenticated || !authState.user) {
+    console.log('User not authenticated, redirecting to login');
+    // Redirect to login page and save the location they were trying to access
+    return <Navigate to="/login" state={{ from: location }} replace />;
   }
   
-  if (authState.user && !allowedRoles.includes(authState.user.userType)) {
-    console.log("Usuario no permitido:", authState.user.userType);
-    // Redirect to appropriate dashboard
+  // Check if user has the required role
+  if (!allowedRoles.includes(authState.user.userType)) {
+    console.log('User does not have required role, redirecting to appropriate dashboard');
+    
+    // User is logged in but doesn't have permission
+    // Redirect to their appropriate dashboard
     switch (authState.user.userType) {
       case UserRole.ADMIN:
         return <Navigate to="/admin/dashboard" replace />;
@@ -29,10 +43,13 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ allowedRoles }) => {
         return <Navigate to="/maestro/dashboard" replace />;
       case UserRole.CHECADOR:
         return <Navigate to="/checador/dashboard" replace />;
+      default:
+        return <Navigate to="/login" replace />;
     }
   }
   
-  console.log("Access granted to protected route");
+  // User is authenticated and has the correct role, render the routes
+  console.log('User authorized, rendering content');
   return <Outlet />;
 };
 

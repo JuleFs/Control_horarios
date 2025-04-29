@@ -4,7 +4,6 @@ import { AuthState, LoginCredentials, User, UserRole } from '../types/auth.types
 import { authService } from '../api/auth.service.ts';
 import { getAuth, setAuth } from '../utils/localStorage.ts';
 import { jwtDecode } from 'jwt-decode';
-import axiosInstance from '../api/axios.ts';
 
 interface AuthContextType {
   authState: AuthState;
@@ -35,36 +34,39 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       // Verify token expiration
       try {
         const decoded = jwtDecode<any>(auth.token);
-        const currentTime = Date.now() / 1000; 
+        // Fix: Divide by 1000 instead of 10000
+        const currentTime = Date.now() / 1000;
         
-        console.log("Token expiration:", decoded.exp);
-        console.log("Current time:", currentTime);
-        console.log("Is token valid:", decoded.exp > currentTime);
-          
         if (decoded.exp && decoded.exp > currentTime) {
-          console.log("Setting auth state from stored token");
           setAuthState(auth);
-          
-          // Ensure token is attached to future requests
-          axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${auth.token}`;
         } else {
-          console.log("Token expired, removing from storage");
           // Token expired
           localStorage.removeItem('auth');
         }
       } catch (e) {
-        console.error("Error decoding token:", e);
         // Invalid token
         localStorage.removeItem('auth');
       }
     }
   }, []);
+
   const login = async (credentials: LoginCredentials) => {
     setIsLoading(true);
     setError(null);
     
     try {
+      // Add console logging for debugging
+      console.log("Attempting login with credentials:", {
+        email: credentials.correo,
+        userType: credentials.userType
+      });
+      
       const response = await authService.login(credentials);
+      console.log("Login response:", response);
+      
+      if (!response || !response.access_token || !response.user) {
+        throw new Error("Invalid response format from server");
+      }
       
       const newAuthState: AuthState = {
         isAuthenticated: true,
@@ -72,11 +74,14 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         token: response.access_token,
       };
       
+      console.log("Setting auth state:", newAuthState);
       setAuthState(newAuthState);
       setAuth(newAuthState);
       
+      // Redirect based on user role
       redirectBasedOnRole(response.user.userType);
     } catch (err: any) {
+      console.error("Login error:", err);
       setError(err.response?.data?.message || 'Login failed. Please try again.');
     } finally {
       setIsLoading(false);
@@ -84,12 +89,14 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   };
 
   const logout = () => {
+    console.log("Logging out");
     authService.logout();
     setAuthState(initialAuthState);
     navigate('/login');
   };
 
   const redirectBasedOnRole = (role: UserRole) => {
+    console.log("Redirecting based on role:", role);
     switch (role) {
       case UserRole.ADMIN:
         navigate('/admin/dashboard');
@@ -103,6 +110,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       case UserRole.CHECADOR:
         navigate('/checador/dashboard');
         break;
+      default:
+        navigate('/login');
     }
   };
 
