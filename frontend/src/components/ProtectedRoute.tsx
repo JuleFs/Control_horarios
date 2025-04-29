@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
-import { Navigate, Outlet, useLocation } from 'react-router-dom';
+import React from 'react';
+import { Navigate, Outlet } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext.tsx';
 import { UserRole } from '../types/auth.types.ts';
 
@@ -9,31 +9,14 @@ interface ProtectedRouteProps {
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ allowedRoles }) => {
   const { authState } = useAuth();
-  const location = useLocation();
   
-  // Log authentication state for debugging
-  useEffect(() => {
-    console.log('ProtectedRoute - Current path:', location.pathname);
-    console.log('ProtectedRoute - Auth state:', {
-      isAuthenticated: authState.isAuthenticated,
-      userType: authState.user?.userType,
-      allowedRoles
-    });
-  }, [authState, allowedRoles, location.pathname]);
-  
-  // Check if user is authenticated
+  // Si no está autenticado, redirigir al login
   if (!authState.isAuthenticated || !authState.user) {
-    console.log('User not authenticated, redirecting to login');
-    // Redirect to login page and save the location they were trying to access
-    return <Navigate to="/login" state={{ from: location }} replace />;
+    return <Navigate to="/login" replace />;
   }
   
-  // Check if user has the required role
+  // Si está autenticado pero no tiene el rol correcto, redirigir a su dashboard correspondiente
   if (!allowedRoles.includes(authState.user.userType)) {
-    console.log('User does not have required role, redirecting to appropriate dashboard');
-    
-    // User is logged in but doesn't have permission
-    // Redirect to their appropriate dashboard
     switch (authState.user.userType) {
       case UserRole.ADMIN:
         return <Navigate to="/admin/dashboard" replace />;
@@ -48,8 +31,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ allowedRoles }) => {
     }
   }
   
-  // User is authenticated and has the correct role, render the routes
-  console.log('User authorized, rendering content');
+  // Si está autenticado y tiene el rol correcto, mostrar las rutas hijas
   return <Outlet />;
 };
 

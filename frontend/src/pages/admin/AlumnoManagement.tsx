@@ -140,7 +140,7 @@ const AlumnoManagement: React.FC = () => {
     }
   });
 
-  // Delete mutation
+ 
   const deleteMutation = useMutation({
     mutationFn: async (id: number) => {
       await axiosInstance.delete(`/alumnos/${id}`);

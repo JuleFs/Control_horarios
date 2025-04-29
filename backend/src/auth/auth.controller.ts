@@ -1,4 +1,3 @@
-// src/auth/auth.controller.ts
 import { Controller, Post, Body, UseGuards, Request } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthLoginDto } from './dto/auth-login.dto';
@@ -14,5 +13,24 @@ export class AuthController {
   @Post('login')
   async login(@Request() req, @Body() authLoginDto: AuthLoginDto) {
     return this.authService.login(req.user);
+  }
+  
+  // Nuevo endpoint para verificar si las credenciales son válidas
+  // sin necesidad de pasar por el guard (para simplificar)
+  @Public()
+  @Post('login-simple')
+  async loginSimple(@Body() authLoginDto: AuthLoginDto) {
+    const user = await this.authService.validateUser(
+      authLoginDto.correo,
+      authLoginDto.contraseña,
+      authLoginDto.userType
+    );
+    
+    if (!user) {
+      return { success: false, message: 'Credenciales inválidas' };
+    }
+    
+    const result = await this.authService.login(user);
+    return { success: true, ...result };
   }
 }

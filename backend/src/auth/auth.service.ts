@@ -1,5 +1,4 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
 import { AlumnoService } from '../alumno/alumno.service';
 import { MaestroService } from '../maestro/maestro.service';
 import { ChecadorService } from '../checador/checador.service';
@@ -14,7 +13,6 @@ export class AuthService {
     private maestroService: MaestroService,
     private checadorService: ChecadorService,
     private adminService: AdminService,
-    private jwtService: JwtService,
   ) {}
 
   async validateUser(email: string, password: string, userType: string): Promise<any> {
@@ -64,14 +62,8 @@ export class AuthService {
         break;
     }
     
-    const payload = {
-      sub: userId,
-      email: user.Correo,
-      userType: user.userType,
-    };
-    
+    // Simplificar la respuesta sin generar token
     return {
-      access_token: this.jwtService.sign(payload),
       user: {
         id: userId,
         nombre: user.Nombre,

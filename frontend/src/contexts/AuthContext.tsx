@@ -1,9 +1,8 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { AuthState, LoginCredentials, User, UserRole } from '../types/auth.types.ts';
+import { AuthState, LoginCredentials, UserRole } from '../types/auth.types.ts';
 import { authService } from '../api/auth.service.ts';
 import { getAuth, setAuth } from '../utils/localStorage.ts';
-import { jwtDecode } from 'jwt-decode';
 
 interface AuthContextType {
   authState: AuthState;
@@ -30,23 +29,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   useEffect(() => {
     // Check if user is already logged in
     const auth = getAuth();
-    if (auth && auth.token) {
-      // Verify token expiration
-      try {
-        const decoded = jwtDecode<any>(auth.token);
-        // Fix: Divide by 1000 instead of 10000
-        const currentTime = Date.now() / 1000;
-        
-        if (decoded.exp && decoded.exp > currentTime) {
-          setAuthState(auth);
-        } else {
-          // Token expired
-          localStorage.removeItem('auth');
-        }
-      } catch (e) {
-        // Invalid token
-        localStorage.removeItem('auth');
-      }
+    if (auth && auth.user) {
+      setAuthState(auth);
     }
   }, []);
 
@@ -55,26 +39,14 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     setError(null);
     
     try {
-      // Add console logging for debugging
-      console.log("Attempting login with credentials:", {
-        email: credentials.correo,
-        userType: credentials.userType
-      });
-      
       const response = await authService.login(credentials);
-      console.log("Login response:", response);
-      
-      if (!response || !response.access_token || !response.user) {
-        throw new Error("Invalid response format from server");
-      }
       
       const newAuthState: AuthState = {
         isAuthenticated: true,
         user: response.user,
-        token: response.access_token,
+        token: response.access_token, // Mantenemos el campo token por compatibilidad
       };
       
-      console.log("Setting auth state:", newAuthState);
       setAuthState(newAuthState);
       setAuth(newAuthState);
       
@@ -82,21 +54,20 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       redirectBasedOnRole(response.user.userType);
     } catch (err: any) {
       console.error("Login error:", err);
-      setError(err.response?.data?.message || 'Login failed. Please try again.');
+      setError(err.response?.data?.message || err.message || 'Error de inicio de sesión. Intente nuevamente.');
+      // No redirigir en caso de error
     } finally {
       setIsLoading(false);
     }
   };
 
   const logout = () => {
-    console.log("Logging out");
     authService.logout();
     setAuthState(initialAuthState);
     navigate('/login');
   };
 
   const redirectBasedOnRole = (role: UserRole) => {
-    console.log("Redirecting based on role:", role);
     switch (role) {
       case UserRole.ADMIN:
         navigate('/admin/dashboard');

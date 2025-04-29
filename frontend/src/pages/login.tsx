@@ -1,6 +1,5 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Formik, Form, Field, ErrorMessage } from 'formik';
+import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
 import { 
   Box, 
@@ -20,7 +19,7 @@ import { UserRole } from '../types/auth.types.ts';
 import { useAuth } from '../contexts/AuthContext.tsx';
 import SchoolIcon from '@mui/icons-material/School';
 
-// Define el esquema de validación usando Yup
+// Schema de validación
 const LoginSchema = Yup.object().shape({
   correo: Yup.string()
     .email('Email inválido')
@@ -35,20 +34,6 @@ const LoginSchema = Yup.object().shape({
 
 const Login: React.FC = () => {
   const { login, isLoading, error } = useAuth();
-  const navigate = useNavigate();
-
-  // El problema puede estar aquí - este manejo directo podría causar la recarga
-  const handleSubmit = async (values: { correo: string; contraseña: string; userType: UserRole }, { setSubmitting }: { setSubmitting: (isSubmitting: boolean) => void }) => {
-    try {
-      await login(values);
-      // No es necesario navegar aquí, ya que el contexto se encarga de la redirección
-    } catch (e) {
-      // El error ya se maneja en el contexto de autenticación
-      console.log("Error en inicio de sesión:", e);
-    } finally {
-      setSubmitting(false);
-    }
-  };
 
   return (
     <Box 
@@ -92,10 +77,19 @@ const Login: React.FC = () => {
             userType: UserRole.ALUMNO,
           }}
           validationSchema={LoginSchema}
-          onSubmit={handleSubmit}
+          onSubmit={async (values, { setSubmitting }) => {
+            try {
+              await login(values);
+              // La redirección se maneja en el contexto
+            } catch (e) {
+              console.error("Error en inicio de sesión:", e);
+            } finally {
+              setSubmitting(false);
+            }
+          }}
         >
-          {({ errors, touched, handleChange, values, isSubmitting }) => (
-            <Form>
+          {({ errors, touched, handleChange, handleSubmit, values, isSubmitting }) => (
+            <Form onSubmit={handleSubmit}>
               <TextField
                 fullWidth
                 id="correo"
