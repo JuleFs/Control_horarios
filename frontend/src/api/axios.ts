@@ -1,3 +1,4 @@
+// frontend/src/api/axios.ts
 import axios from 'axios';
 import { getAuth } from '../utils/localStorage.ts';
 
@@ -10,10 +11,10 @@ const axiosInstance = axios.create({
   },
 });
 
-// Removemos la lógica de token y simplificamos el interceptor
+// Simple request interceptor without token
 axiosInstance.interceptors.request.use(
   (config) => {
-    // No incluimos Authorization header ya que no usamos tokens
+    // In a token-less approach, we don't add Authorization headers
     return config;
   },
   (error) => {
@@ -21,14 +22,14 @@ axiosInstance.interceptors.request.use(
   }
 );
 
-// Simplificamos el interceptor de respuesta para manejar errores de autenticación
+// Response interceptor that handles authentication errors
 axiosInstance.interceptors.response.use(
   (response) => {
     return response;
   },
   (error) => {
+    // If we get an unauthorized response, redirect to login
     if (error.response && (error.response.status === 401 || error.response.status === 403)) {
-      // Si hay error de autenticación, limpiamos el storage y redirigimos
       localStorage.removeItem('auth');
       window.location.href = '/login';
     }

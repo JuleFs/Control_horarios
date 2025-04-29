@@ -1,3 +1,4 @@
+// backend/src/auth/auth.module.ts
 import { Module } from '@nestjs/common';
 import { PassportModule } from '@nestjs/passport';
 import { AuthService } from './auth.service';
@@ -7,6 +8,7 @@ import { MaestroModule } from '../maestro/maestro.module';
 import { ChecadorModule } from '../checador/checador.module';
 import { AdminModule } from '../admin/admin.module';
 import { LocalStrategy } from './strategies/local.strategy';
+import { JwtStrategy } from './strategies/jwt-strategy';
 
 @Module({
   imports: [
@@ -16,7 +18,11 @@ import { LocalStrategy } from './strategies/local.strategy';
     ChecadorModule,
     AdminModule,
   ],
-  providers: [AuthService, LocalStrategy],
+  providers: [
+    AuthService, 
+    LocalStrategy,
+    JwtStrategy // Keep this for compatibility but it won't be used much
+  ],
   controllers: [AuthController],
   exports: [AuthService],
 })

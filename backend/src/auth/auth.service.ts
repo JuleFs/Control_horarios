@@ -1,3 +1,4 @@
+// backend/src/auth/auth.service.ts
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { AlumnoService } from '../alumno/alumno.service';
 import { MaestroService } from '../maestro/maestro.service';
@@ -48,7 +49,7 @@ export class AuthService {
   async login(user: any) {
     let userId;
     
-    // Determinar el ID basado en el tipo de usuario
+    // Determine the ID based on user type
     switch (user.userType) {
       case Role.ALUMNO:
         userId = user.ID_Alumno;
@@ -62,11 +63,11 @@ export class AuthService {
         break;
     }
     
-    // Simplificar la respuesta sin generar token
+    // Instead of generating a JWT token, return user info directly
     return {
       user: {
         id: userId,
-        nombre: user.Nombre,
+        nombre: user.Nombre || '', // Adding fallback for checador who doesn't have Nombre
         correo: user.Correo,
         userType: user.userType,
       },

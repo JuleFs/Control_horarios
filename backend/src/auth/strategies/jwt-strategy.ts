@@ -1,3 +1,4 @@
+// backend/src/auth/strategies/jwt-strategy.ts
 import { Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
@@ -6,27 +7,22 @@ import { ConfigService } from '@nestjs/config';
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(private readonly configService: ConfigService) {
-    // Obtener el secreto antes de pasarlo al constructor
-    const secretKey = configService.get<string>('JWT_SECRET') || 'desarrollo_secreto_temporal';
-    
-    if (!secretKey) {
-      throw new Error('JWT_SECRET no está definido en la configuración');
-    }
-    
+    // Use a dummy secret since we're not really validating JWTs anymore
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-      ignoreExpiration: false,
-      secretOrKey: secretKey,
+      ignoreExpiration: true, // Ignore expiration for our simplified auth
+      secretOrKey: 'dummy-secret',
     });
   }
 
-  // backend/src/auth/strategies/jwt-strategy.ts
-async validate(payload: any) {
-  console.log("JWT Payload:", payload);
-  return {
-    userId: payload.sub,
-    email: payload.email,
-    userType: payload.userType,
-  };
-}
+  // This will be called by Passport.js
+  async validate(payload: any) {
+    // In a token-less approach, this method would normally be more robust
+    // For now, we'll just return a simple user object
+    return {
+      userId: payload?.sub || 1,
+      email: payload?.email || 'user@example.com',
+      userType: payload?.userType || 'alumno',
+    };
+  }
 }

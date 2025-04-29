@@ -1,4 +1,5 @@
-import React from 'react';
+// frontend/src/pages/login.tsx
+import React, { useEffect } from 'react';
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
 import { 
@@ -17,9 +18,10 @@ import {
 } from '@mui/material';
 import { UserRole } from '../types/auth.types.ts';
 import { useAuth } from '../contexts/AuthContext.tsx';
+import { useNavigate } from 'react-router-dom';
 import SchoolIcon from '@mui/icons-material/School';
 
-// Schema de validación
+// Validation schema
 const LoginSchema = Yup.object().shape({
   correo: Yup.string()
     .email('Email inválido')
@@ -33,7 +35,28 @@ const LoginSchema = Yup.object().shape({
 });
 
 const Login: React.FC = () => {
-  const { login, isLoading, error } = useAuth();
+  const { login, isLoading, error, authState } = useAuth();
+  const navigate = useNavigate();
+
+  // If user is already logged in, redirect them
+  useEffect(() => {
+    if (authState.isAuthenticated && authState.user) {
+      switch (authState.user.userType) {
+        case UserRole.ADMIN:
+          navigate('/admin/dashboard');
+          break;
+        case UserRole.ALUMNO:
+          navigate('/alumno/dashboard');
+          break;
+        case UserRole.MAESTRO:
+          navigate('/maestro/dashboard');
+          break;
+        case UserRole.CHECADOR:
+          navigate('/checador/dashboard');
+          break;
+      }
+    }
+  }, [authState, navigate]);
 
   return (
     <Box 
@@ -80,7 +103,7 @@ const Login: React.FC = () => {
           onSubmit={async (values, { setSubmitting }) => {
             try {
               await login(values);
-              // La redirección se maneja en el contexto
+              // Redirection is handled in useEffect
             } catch (e) {
               console.error("Error en inicio de sesión:", e);
             } finally {

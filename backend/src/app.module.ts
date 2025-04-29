@@ -1,3 +1,4 @@
+// backend/src/app.module.ts
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
@@ -46,12 +47,12 @@ import { RolesGuard } from './auth/guards/roles.guard';
     AuthModule,
   ],
   providers: [
-    // Aplicar JwtAuthGuard globalmente (excepto rutas con @Public())
+    // Apply JwtAuthGuard globally (except routes with @Public())
     {
       provide: APP_GUARD,
       useClass: JwtAuthGuard,
     },
-    // Aplicar RolesGuard globalmente
+    // Apply RolesGuard globally
     {
       provide: APP_GUARD,
       useClass: RolesGuard,

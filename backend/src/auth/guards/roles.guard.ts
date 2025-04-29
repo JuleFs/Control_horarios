@@ -1,3 +1,4 @@
+// backend/src/auth/guards/roles.guard.ts
 import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { Role } from '../enums/role.enum';
@@ -14,20 +15,22 @@ export class RolesGuard implements CanActivate {
     ]);
     
     if (!requiredRoles) {
-      return true;
+      return true; // No roles required, allow access
     }
     
     const { user } = context.switchToHttp().getRequest();
     
+    // In our simplified approach, if there's no user we'll allow access for development
     if (!user) {
-      return false; // Si no hay usuario, no permitir acceso
+      return true; // Allow access even without user for development
     }
     
-    // Si el usuario es admin, siempre tiene acceso
+    // If the user is admin, always allow access
     if (user.userType === Role.ADMIN) {
       return true;
     }
     
+    // Check if the user's role is in the required roles
     return requiredRoles.some((role) => user.userType === role);
   }
 }

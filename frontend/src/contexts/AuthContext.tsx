@@ -1,3 +1,4 @@
+// frontend/src/contexts/AuthContext.tsx
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AuthState, LoginCredentials, UserRole } from '../types/auth.types.ts';
@@ -15,7 +16,7 @@ interface AuthContextType {
 const initialAuthState: AuthState = {
   isAuthenticated: false,
   user: null,
-  token: null,
+  token: null, // Keeping this field for compatibility
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -26,11 +27,14 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
 
+  // Check if user is already logged in on mount
   useEffect(() => {
-    // Check if user is already logged in
     const auth = getAuth();
     if (auth && auth.user) {
-      setAuthState(auth);
+      setAuthState({
+        ...auth,
+        isAuthenticated: true,
+      });
     }
   }, []);
 
@@ -44,7 +48,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       const newAuthState: AuthState = {
         isAuthenticated: true,
         user: response.user,
-        token: response.access_token, // Mantenemos el campo token por compatibilidad
+        token: response.access_token, // Keeping for compatibility
       };
       
       setAuthState(newAuthState);
@@ -54,8 +58,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       redirectBasedOnRole(response.user.userType);
     } catch (err: any) {
       console.error("Login error:", err);
-      setError(err.response?.data?.message || err.message || 'Error de inicio de sesión. Intente nuevamente.');
-      // No redirigir en caso de error
+      setError(err.response?.data?.message || err.message || 'Login failed. Please try again.');
     } finally {
       setIsLoading(false);
     }

@@ -1,31 +1,29 @@
+// frontend/src/api/auth.service.ts
 import { LoginCredentials, LoginResponse } from '../types/auth.types.ts';
 import axiosInstance from './axios.ts';
 
 export const authService = {
   login: async (credentials: LoginCredentials): Promise<LoginResponse> => {
     try {
-      // Usar el nuevo endpoint simplificado
+      // Use the simple login endpoint
       const response = await axiosInstance.post<any>('/auth/login-simple', credentials);
       
       if (!response.data.success) {
         throw new Error(response.data.message || 'Credenciales inválidas');
       }
       
-      // Formatear la respuesta según lo esperado por el frontend
-      const loginResponse: LoginResponse = {
+      return {
         user: response.data.user,
-        access_token: "dummy-token" // Un token ficticio para mantener compatibilidad
+        access_token: "dummy_token" // We're not using tokens anymore, but keep this for compatibility
       };
-      
-      return loginResponse;
     } catch (error) {
-      // Relanzar el error para que AuthContext lo maneje
+      console.error('Login error:', error);
       throw error;
     }
   },
   
   logout: (): void => {
-    // Frontend-only logout, just clearing the stored auth data
+    // Just clear localStorage
     localStorage.removeItem('auth');
   },
 };

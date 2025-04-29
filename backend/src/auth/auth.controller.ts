@@ -1,3 +1,4 @@
+// backend/src/auth/auth.controller.ts
 import { Controller, Post, Body, UseGuards, Request } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthLoginDto } from './dto/auth-login.dto';
@@ -15,8 +16,7 @@ export class AuthController {
     return this.authService.login(req.user);
   }
   
-  // Nuevo endpoint para verificar si las credenciales son válidas
-  // sin necesidad de pasar por el guard (para simplificar)
+  // Simple login endpoint without guard
   @Public()
   @Post('login-simple')
   async loginSimple(@Body() authLoginDto: AuthLoginDto) {

@@ -1,3 +1,4 @@
+// frontend/src/utils/localStorage.ts
 import { AuthState } from '../types/auth.types.ts';
 
 export const setAuth = (auth: AuthState): void => {
@@ -21,7 +22,7 @@ export const getAuth = (): AuthState | null => {
     const parsedAuth = JSON.parse(auth) as AuthState;
     
     // Validate the parsed object has the expected structure
-    if (!parsedAuth || typeof parsedAuth !== 'object' || !parsedAuth.token) {
+    if (!parsedAuth || typeof parsedAuth !== 'object' || !parsedAuth.user) {
       console.warn('Invalid auth data in localStorage, removing it');
       localStorage.removeItem('auth');
       return null;
@@ -32,19 +33,6 @@ export const getAuth = (): AuthState | null => {
   } catch (error) {
     console.error('Error parsing auth from localStorage:', error);
     localStorage.removeItem('auth');
-    return null;
-  }
-};
-
-export const getToken = (): string | null => {
-  try {
-    const auth = getAuth();
-    if (!auth || !auth.token) {
-      return null;
-    }
-    return auth.token;
-  } catch (error) {
-    console.error('Error getting token:', error);
     return null;
   }
 };

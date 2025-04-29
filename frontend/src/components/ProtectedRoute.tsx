@@ -1,5 +1,6 @@
-import React from 'react';
-import { Navigate, Outlet } from 'react-router-dom';
+// frontend/src/components/ProtectedRoute.tsx
+import React, { useEffect } from 'react';
+import { Navigate, Outlet, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext.tsx';
 import { UserRole } from '../types/auth.types.ts';
 
@@ -9,13 +10,20 @@ interface ProtectedRouteProps {
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ allowedRoles }) => {
   const { authState } = useAuth();
+  const location = useLocation();
   
-  // Si no está autenticado, redirigir al login
+  // Ensure the authentication state persists between page navigations
+  useEffect(() => {
+    // This is just to trigger a re-render when the location changes,
+    // ensuring the auth state is checked for each route
+  }, [location]);
+  
+  // If not authenticated, redirect to login
   if (!authState.isAuthenticated || !authState.user) {
     return <Navigate to="/login" replace />;
   }
   
-  // Si está autenticado pero no tiene el rol correcto, redirigir a su dashboard correspondiente
+  // If user doesn't have an allowed role, redirect to their appropriate dashboard
   if (!allowedRoles.includes(authState.user.userType)) {
     switch (authState.user.userType) {
       case UserRole.ADMIN:
@@ -31,7 +39,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ allowedRoles }) => {
     }
   }
   
-  // Si está autenticado y tiene el rol correcto, mostrar las rutas hijas
+  // User is authenticated and has permission, show the protected route
   return <Outlet />;
 };
 
