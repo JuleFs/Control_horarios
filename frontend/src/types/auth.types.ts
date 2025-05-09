@@ -16,7 +16,7 @@ export interface User {
 export interface AuthState {
   isAuthenticated: boolean;
   user: User | null;
-  token: string | null; // Keeping this for compatibility, but we won't use it
+  token: string | null; 
 }
 
 export interface LoginCredentials {
