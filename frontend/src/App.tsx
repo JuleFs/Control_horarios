@@ -19,6 +19,7 @@ import AlumnoManagement from './pages/admin/AlumnoManagement.tsx';
 import MaestroManagement from './pages/admin/MaestrosManagement.tsx';
 import ChecadorManagement from './pages/admin/ChecadorManagement.tsx';
 import AsistenciaReports from './pages/admin/AsistenciaReports.tsx';
+import AulaManagement from './pages/admin/AulaManagement.tsx';
 //import AdminProfile from './pages/admin/AdminProfile.tsx';
 
 // Student Pages
@@ -57,7 +58,7 @@ const App: React.FC = () => {
               <Route path="/admin/users" element={<AdminUsers />} />
               <Route path="/admin/grupos" element={<GrupoManagement />} />
               <Route path="/admin/materias" element={<MateriaManagement />} />
-              <Route path="/admin/salones" element={<SalonManagement />} />
+              <Route path="/admin/salones" element={<AulaManagement />} />
               <Route path="/admin/horarios" element={<HorarioManagement />} />
               <Route path="/admin/alumnos" element={<AlumnoManagement />} />
               <Route path="/admin/maestros" element={<MaestroManagement />} />

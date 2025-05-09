@@ -418,7 +418,7 @@ const UserManagement: React.FC = () => {
     <MainLayout>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
         <Typography variant="h4">
-          User Management
+          Gestión de Usuarios
         </Typography>
         <Button
           variant="contained"
@@ -426,7 +426,7 @@ const UserManagement: React.FC = () => {
           startIcon={<AddIcon />}
           onClick={handleAddClick}
         >
-          Add New User
+          AGREGAR USUARIO
         </Button>
       </Box>
       
@@ -438,10 +438,10 @@ const UserManagement: React.FC = () => {
           textColor="primary"
           centered
         >
-          <Tab label="Administrators" />
-          <Tab label="Teachers" />
-          <Tab label="Students" />
-          <Tab label="Attendance Checkers" />
+          <Tab label="Administradores" />
+          <Tab label="Maestros" />
+          <Tab label="Alumnos" />
+          <Tab label="Checadores" />
         </Tabs>
         
         {/* Administrators Tab */}

@@ -314,7 +314,7 @@ const AdminDashboard: React.FC = () => {
               color="primary" 
               fullWidth 
               component={Link} 
-              to="/admin/alumnos/new"
+              to="/admin/alumnos"
               startIcon={<PersonIcon />}
             >
               Añadir Estudiante
@@ -334,7 +334,7 @@ const AdminDashboard: React.FC = () => {
               color="secondary" 
               fullWidth 
               component={Link} 
-              to="/admin/maestros/new"
+              to="/admin/maestros"
               startIcon={<SchoolIcon />}
             >
               Añadir Maestro
@@ -354,7 +354,7 @@ const AdminDashboard: React.FC = () => {
               color="success" 
               fullWidth 
               component={Link} 
-              to="/admin/horarios/new"
+              to="/admin/horarios"
               startIcon={<TimelineIcon />}
             >
               Registrar Horario

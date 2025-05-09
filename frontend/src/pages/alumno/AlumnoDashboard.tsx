@@ -84,7 +84,7 @@ const AlumnoDashboard: React.FC = () => {
   return (
     <MainLayout>
       <Typography variant="h4" gutterBottom>
-        Welcome, {authState.user?.nombre}
+        Bienvenido, {authState.user?.nombre}
       </Typography>
       
       {/* Summary Cards - using Box instead of Grid */}
