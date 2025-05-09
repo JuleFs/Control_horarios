@@ -14,7 +14,7 @@ import AdminUsers from './pages/admin/UserManagement.tsx';
 import GrupoManagement from './pages/admin/Grupo.Management.tsx';
 import MateriaManagement from './pages/admin/Materia.Management.tsx';
 import SalonManagement from './pages/admin/SalonManagement.tsx';
-import HorarioManagement from './pages/admin/SalonManagement.tsx'; // Reusing the file since it contains HorarioManagement
+import HorarioManagement from './pages/admin/HorarioManagement.tsx'; // Reusing the file since it contains HorarioManagement
 import AlumnoManagement from './pages/admin/AlumnoManagement.tsx';
 import MaestroManagement from './pages/admin/MaestrosManagement.tsx';
 import ChecadorManagement from './pages/admin/ChecadorManagement.tsx';
