@@ -1,9 +1,9 @@
 // src/pages/admin/HorarioManagement.tsx
-import React, { useState } from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import MainLayout from '../../components/layout/MainLayout.tsx';
-import axiosInstance from '../../api/axios.ts';
-import WeeklyScheduleSelector from '../../components/WeeklyScheduleSelector.tsx';
+import React, { useState } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import MainLayout from "../../components/layout/MainLayout.tsx";
+import axiosInstance from "../../api/axios.ts";
+import WeeklyScheduleSelector from "../../components/WeeklyScheduleSelector.tsx";
 import {
   Typography,
   Paper,
@@ -12,8 +12,8 @@ import {
   Tabs,
   CircularProgress,
   Alert,
-  Snackbar
-} from '@mui/material';
+  Snackbar,
+} from "@mui/material";
 
 // Interfaces
 interface Grupo {
@@ -50,7 +50,6 @@ interface TabPanelProps {
   value: number;
 }
 
-
 const TabPanel: React.FC<TabPanelProps> = (props) => {
   const { children, value, index, ...other } = props;
 
@@ -72,41 +71,57 @@ const HorarioManagement: React.FC = () => {
   const [tabValue, setTabValue] = useState<number>(0);
   const [snackbar, setSnackbar] = useState({
     open: false,
-    message: '',
-    severity: 'success' as 'success' | 'error'
+    message: "",
+    severity: "success" as "success" | "error",
   });
 
   // Obtener datos necesarios del servidor
-  const { data: grupos, isLoading: gruposLoading, error: gruposError } = useQuery({
-    queryKey: ['grupos'],
+  const {
+    data: grupos,
+    isLoading: gruposLoading,
+    error: gruposError,
+  } = useQuery({
+    queryKey: ["grupos"],
     queryFn: async () => {
-      const response = await axiosInstance.get('/grupos');
+      const response = await axiosInstance.get("/grupos");
       return response.data as Grupo[];
-    }
+    },
   });
 
-  const { data: materias, isLoading: materiasLoading, error: materiasError } = useQuery({
-    queryKey: ['materias'],
+  const {
+    data: materias,
+    isLoading: materiasLoading,
+    error: materiasError,
+  } = useQuery({
+    queryKey: ["materias"],
     queryFn: async () => {
-      const response = await axiosInstance.get('/materias');
+      const response = await axiosInstance.get("/materias");
       return response.data as Materia[];
-    }
+    },
   });
 
-  const { data: salones, isLoading: salonesLoading, error: salonesError } = useQuery({
-    queryKey: ['salones'],
+  const {
+    data: salones,
+    isLoading: salonesLoading,
+    error: salonesError,
+  } = useQuery({
+    queryKey: ["salones"],
     queryFn: async () => {
-      const response = await axiosInstance.get('/salones');
+      const response = await axiosInstance.get("/salones");
       return response.data as Salon[];
-    }
+    },
   });
 
-  const { data: horarios, isLoading: horariosLoading, error: horariosError } = useQuery({
-    queryKey: ['horarios'],
+  const {
+    data: horarios,
+    isLoading: horariosLoading,
+    error: horariosError,
+  } = useQuery({
+    queryKey: ["horarios"],
     queryFn: async () => {
-      const response = await axiosInstance.get('/horarios');
+      const response = await axiosInstance.get("/horarios");
       return response.data;
-    }
+    },
   });
 
   // Mutación para crear horarios
@@ -115,27 +130,28 @@ const HorarioManagement: React.FC = () => {
       // Para múltiples horarios, hacemos peticiones secuenciales
       const results: any[] = [];
       for (const horario of horarios) {
-        const response = await axiosInstance.post('/horarios', horario);
+        const response = await axiosInstance.post("/horarios", horario);
         results.push(response.data);
       }
       return results;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['horarios'] });
+      queryClient.invalidateQueries({ queryKey: ["horarios"] });
       setSnackbar({
         open: true,
-        message: 'Horarios guardados exitosamente',
-        severity: 'success'
+        message: "Horarios guardados exitosamente",
+        severity: "success",
       });
     },
     onError: (error: any) => {
-      console.error('Error al guardar horarios:', error);
+      console.error("Error al guardar horarios:", error);
       setSnackbar({
         open: true,
-        message: error.response?.data?.message || 'Error al guardar los horarios',
-        severity: 'error'
+        message:
+          error.response?.data?.message || "Error al guardar los horarios",
+        severity: "error",
       });
-    }
+    },
   });
 
   // Manejar cambio de pestaña
@@ -149,12 +165,14 @@ const HorarioManagement: React.FC = () => {
   };
 
   // Verificar si hay errores en la carga de datos
-  const hasErrors = gruposError || materiasError || salonesError || horariosError;
-  const isLoading = gruposLoading || materiasLoading || salonesLoading || horariosLoading;
+  const hasErrors =
+    gruposError || materiasError || salonesError || horariosError;
+  const isLoading =
+    gruposLoading || materiasLoading || salonesLoading || horariosLoading;
 
   return (
     <MainLayout>
-      <div style={{ padding: '16px' }}>
+      <div style={{ padding: "16px" }}>
         <Typography variant="h4" gutterBottom>
           Administración de Horarios
         </Typography>
@@ -164,7 +182,7 @@ const HorarioManagement: React.FC = () => {
             Error al cargar los datos necesarios. Por favor, intente de nuevo.
           </Alert>
         ) : isLoading ? (
-          <Box sx={{ display: 'flex', justifyContent: 'center', p: 3 }}>
+          <Box sx={{ display: "flex", justifyContent: "center", p: 3 }}>
             <CircularProgress />
           </Box>
         ) : (
@@ -192,7 +210,8 @@ const HorarioManagement: React.FC = () => {
                   />
                 ) : (
                   <Alert severity="warning">
-                    Faltan datos necesarios para crear horarios. Asegúrese de que hay grupos, materias y salones registrados.
+                    Faltan datos necesarios para crear horarios. Asegúrese de
+                    que hay grupos, materias y salones registrados.
                   </Alert>
                 )}
               </TabPanel>
@@ -204,34 +223,39 @@ const HorarioManagement: React.FC = () => {
                     <Typography variant="h6" gutterBottom>
                       Horarios Registrados
                     </Typography>
-                    
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+
+                    <div
+                      style={{
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: "8px",
+                      }}
+                    >
                       {horarios.map((horario: any, index: number) => {
-                        const grupo = grupos?.find(g => g.ID_Grupo === horario.ID_Grupo);
-                        const materia = materias?.find(m => m.ID_Materia === horario.ID_Materia);
-                        const salon = salones?.find(s => s.ID_Salon === horario.ID_Salon);
-                        
                         return (
-                          <Paper 
-                            key={index} 
-                            sx={{ 
-                              p: 2, 
-                              mb: 1, 
-                              display: 'flex', 
-                              justifyContent: 'space-between',
-                              alignItems: 'center',
-                              bgcolor: '#f5f5f5' 
+                          <Paper
+                            key={index}
+                            sx={{
+                              p: 2,
+                              mb: 1,
+                              display: "flex",
+                              justifyContent: "space-between",
+                              alignItems: "center",
+                              bgcolor: "#f5f5f5",
                             }}
                           >
                             <div>
                               <Typography variant="subtitle1">
-                                {materia?.Nombre} - {grupo?.Nombre}
+                                {horario.Materia.Nombre} -{" "}
+                                {horario.Grupo.Nombre}
                               </Typography>
                               <Typography variant="body2">
-                                {horario.Dia} de {horario.HoraInicio} a {horario.HoraFin} - Salón: {salon?.Nombre}
+                                {horario.Dia} de {horario.HoraInicio} a{" "}
+                                {horario.HoraFin} - Salón:{" "}
+                                {horario.Salon.Nombre}
                               </Typography>
                               <Typography variant="body2" color="textSecondary">
-                                Profesor: {materia?.Maestro.Nombre}
+                                Profesor: {horario.Materia.Maestro.Nombre}
                               </Typography>
                             </div>
                           </Paper>
@@ -241,7 +265,8 @@ const HorarioManagement: React.FC = () => {
                   </Box>
                 ) : (
                   <Alert severity="info">
-                    No hay horarios registrados aún. Utilice la pestaña "Registrar Nuevos Horarios" para crear horarios.
+                    No hay horarios registrados aún. Utilice la pestaña
+                    "Registrar Nuevos Horarios" para crear horarios.
                   </Alert>
                 )}
               </TabPanel>
