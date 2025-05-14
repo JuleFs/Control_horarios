@@ -238,7 +238,7 @@ const CheckadorRegister: React.FC = () => {
   };
   
   // Calcular estadísticas
-  const totalAlumnos = horarioSeleccionado?.Grupo.alumnos.length || 0;
+  const totalAlumnos = horarioSeleccionado?.Grupo?.alumnos?.length || 0;
   const presentesCount = Object.values(asistencias).filter(Boolean).length;
   const ausentesCount = totalAlumnos - presentesCount;
   
@@ -390,7 +390,7 @@ const CheckadorRegister: React.FC = () => {
                   color="primary"
                   startIcon={<SaveIcon />}
                   onClick={handleSubmit}
-                  disabled={!isFormValid || registrarAsistenciaMutation.isPending}
+                  // disabled={!isFormValid || registrarAsistenciaMutation.isPending}
                 >
                   {registrarAsistenciaMutation.isPending ? (
                     <>

@@ -35,11 +35,13 @@ interface Materia {
 }
 
 const MisMaterias: React.FC = () => {
+  const data = localStorage.getItem('auth');
+  const parsedData = data ? JSON.parse(data) : null;
   // Fetch teacher's subjects
   const { data: materias, isLoading, error } = useQuery({
     queryKey: ['maestro', 'materias'],
     queryFn: async () => {
-      const response = await axiosInstance.get('/maestros/me/materias');
+      const response = await axiosInstance.post('/maestros/me/materias', parsedData);
       return response.data as Materia[];
     }
   });

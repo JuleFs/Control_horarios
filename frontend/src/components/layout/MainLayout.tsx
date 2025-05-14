@@ -91,7 +91,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   const drawer = (
     <div>
       <Toolbar>
-        <Typography variant="h6" noWrap component="div">
+        <Typography fontSize={16} textAlign={'center'} component="div">
           Universidad Autónoma de Sinaloa
         </Typography>
       </Toolbar>

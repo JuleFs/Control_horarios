@@ -28,7 +28,7 @@ import {
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
 import { es } from 'date-fns/locale';
-import { format, parseISO, subMonths } from 'date-fns';
+import { format, parse, parseISO, subMonths } from 'date-fns';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import CancelIcon from '@mui/icons-material/Cancel';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
@@ -73,12 +73,14 @@ const MaestroAsistencias: React.FC = () => {
     fechaInicio: subMonths(new Date(), 1), // Por defecto un mes atrás
     fechaFin: new Date() // Hoy
   });
+  const data = localStorage.getItem('auth');
+  const parsedData = data ? JSON.parse(data) : null;
   
   // Fetch horarios del maestro para obtener las materias y grupos
   const { data: horarios, isLoading: horariosLoading } = useQuery({
     queryKey: ['maestro', 'horarios'],
     queryFn: async () => {
-      const response = await axiosInstance.get('/maestros/me/horarios');
+      const response = await axiosInstance.post('/maestros/me/horarios', parsedData);
       return response.data as Horario[];
     }
   });
@@ -92,7 +94,7 @@ const MaestroAsistencias: React.FC = () => {
       params.append('fechaInicio', filtros.fechaInicio.toISOString().split('T')[0]);
       params.append('fechaFin', filtros.fechaFin.toISOString().split('T')[0]);
       
-      const response = await axiosInstance.get(`/maestros/me/asistencias?${params.toString()}`);
+      const response = await axiosInstance.post(`/maestros/me/asistencias?${params.toString()}`, parsedData);
       return response.data as Asistencia[];
     }
   });

@@ -20,9 +20,10 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     // In a token-less approach, this method would normally be more robust
     // For now, we'll just return a simple user object
     return {
-      userId: payload?.sub || 1,
-      email: payload?.email || 'user@example.com',
-      userType: payload?.userType || 'alumno',
+      id: payload.user.id,
+      correo: payload.user.correo,
+      nombre: payload.user.nombre,
+      userType: payload.user.userType
     };
   }
 }

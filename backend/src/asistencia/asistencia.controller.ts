@@ -1,5 +1,5 @@
 // src/asistencia/asistencia.controller.ts
-import { Controller, Get, Post, Body, Param, Put, Delete, Query, ParseIntPipe, Request } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Put, Delete, Query, ParseIntPipe, Req } from '@nestjs/common';
 import { AsistenciaService } from './asistencia.service';
 import { CreateAsistenciaDto } from './dto/create-asistencia.dto';
 import { Asistencia } from '../entities/asistencia.entity';
@@ -8,6 +8,11 @@ import { Role } from '../auth/enums/role.enum';
 import { HorarioService } from '../horario/horario.service';
 import { AlumnoService } from '../alumno/alumno.service';
 import { ParseDatePipe } from '../pipes/parse-date.pipe';
+
+interface CrearAsistencia {
+  user: any;
+  asistencia: CreateAsistenciaDto;
+}
 
 @Controller('asistencias')
 export class AsistenciaController {
@@ -19,12 +24,12 @@ export class AsistenciaController {
 
   @Post()
   @Roles(Role.ADMIN, Role.CHECADOR, Role.ALUMNO)
-  async create(@Request() req, @Body() createAsistenciaDto: CreateAsistenciaDto): Promise<Asistencia> {
+  async create(@Body() asist: CrearAsistencia): Promise<Asistencia> {
     // Verificar si el usuario es un alumno
-    if (req.user.userType === Role.ALUMNO) {
+    if (asist.user.userType === Role.ALUMNO) {
       // Verificar que el horario pertenezca al grupo del alumno
-      const horario = await this.horarioService.findOne(createAsistenciaDto.Horario_ID);
-      const alumno = await this.alumnoService.findOne(req.user.userId);
+      const horario = await this.horarioService.findOne(asist.asistencia.Horario_ID);
+      const alumno = await this.alumnoService.findOne(asist.user.userId);
       
       // Si el grupo del horario no coincide con el grupo del alumno
       if (horario.Grupo.ID_Grupo !== alumno.Grupo.ID_Grupo) {
@@ -33,7 +38,7 @@ export class AsistenciaController {
     }
     
     // Si es admin, checador o pasó la validación de alumno
-    return this.asistenciaService.create(createAsistenciaDto);
+    return this.asistenciaService.create(asist.asistencia);
   }
 
   @Get()
@@ -50,11 +55,11 @@ export class AsistenciaController {
   
   @Get('horario/:id')
   @Roles(Role.ADMIN, Role.CHECADOR, Role.MAESTRO, Role.ALUMNO)
-  async findByHorario(@Request() req, @Param('id', ParseIntPipe) horarioId: number): Promise<Asistencia[]> {
+  async findByHorario(@Req() req, @Param('id', ParseIntPipe) horarioId: number): Promise<Asistencia[]> {
     // Si es alumno, verificar que el horario corresponda a su grupo
     if (req.user.userType === Role.ALUMNO) {
       const horario = await this.horarioService.findOne(horarioId);
-      const alumno = await this.alumnoService.findOne(req.user.userId);
+      const alumno = await this.alumnoService.findOne(req.body.user.id);
       
       if (horario.Grupo.ID_Grupo !== alumno.Grupo.ID_Grupo) {
         throw new Error('No tienes permiso para ver las asistencias de este horario');
@@ -84,17 +89,17 @@ findByFecha(
   return this.asistenciaService.findByFecha(fechaInicio, fechaFin);
 }
   
-  @Get('grupo/:id/fecha')
+  @Post('grupo/:id/fecha')
   @Roles(Role.ADMIN, Role.CHECADOR, Role.MAESTRO)
   async findByGrupoAndFecha(
-    @Request() req,
+    @Req() req,
     @Param('id', ParseIntPipe) grupoId: number,
     @Query('fechaInicio', ParseDatePipe) fechaInicio: Date,
     @Query('fechaFin', ParseDatePipe) fechaFin: Date
   ): Promise<Asistencia[]> {
     // Si es maestro, verificar que enseñe a este grupo
-    if (req.user.userType === Role.MAESTRO) {
-      const horarios = await this.horarioService.findByMaestroId(req.user.userId);
+    if (req.body.user.userType === Role.MAESTRO) {
+      const horarios = await this.horarioService.findByMaestroId(req.body.user.id);
       const gruposIds = horarios.map(h => h.Grupo.ID_Grupo);
       
       if (!gruposIds.includes(grupoId)) {
@@ -105,16 +110,16 @@ findByFecha(
     return this.asistenciaService.findByGrupoAndFecha(grupoId, fechaInicio, fechaFin);
   }
   
-  @Get('maestro/:id/fecha')
+  @Post('maestro/:id/fecha')
   @Roles(Role.ADMIN, Role.CHECADOR, Role.MAESTRO)
   findByMaestroAndFecha(
-    @Request() req,
+    @Req() req,
     @Param('id', ParseIntPipe) maestroId: number,
     @Query('fechaInicio', ParseDatePipe) fechaInicio: Date,
     @Query('fechaFin', ParseDatePipe) fechaFin: Date
   ): Promise<Asistencia[]> {
     // Si es maestro, solo puede ver sus propias asistencias
-    if (req.user.userType === Role.MAESTRO && req.user.userId !== maestroId) {
+    if (req.body.user.userType === Role.MAESTRO && req.body.user.id !== maestroId) {
       throw new Error('Solo puedes ver tus propias asistencias');
     }
     

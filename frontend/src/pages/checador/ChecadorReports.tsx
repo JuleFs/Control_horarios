@@ -28,7 +28,7 @@ import {
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
 import { es } from 'date-fns/locale';
-import { format, parseISO, subMonths, isValid } from 'date-fns';
+import { format, parseISO, subMonths, isValid, addDays } from 'date-fns';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import CancelIcon from '@mui/icons-material/Cancel';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
@@ -79,12 +79,14 @@ interface Asistencia {
 }
 
 const CheckadorReports: React.FC = () => {
+  const data = localStorage.getItem('auth');
+  const user = data ? JSON.parse(data) : null;
   // Estado para filtros
   const [filtros, setFiltros] = useState({
     grupoId: '',
     materiaId: '',
     fechaInicio: subMonths(new Date(), 1), // Por defecto un mes atrás
-    fechaFin: new Date() // Hoy
+    fechaFin: addDays(new Date(), 1) // Mañana
   });
   
   // Fetch grupos
@@ -135,7 +137,7 @@ const CheckadorReports: React.FC = () => {
         url = `/asistencias/fecha/rango?${params.toString()}`;
       }
       
-      const response = await axiosInstance.get(url);
+      const response = await axiosInstance.post(url, user);
       let asistencias = response.data as Asistencia[];
       
       // Filtrar por materia si es necesario (en el cliente)

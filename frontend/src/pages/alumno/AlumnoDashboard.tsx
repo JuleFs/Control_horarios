@@ -48,12 +48,15 @@ interface Asistencia {
 
 const AlumnoDashboard: React.FC = () => {
   const { authState } = useAuth();
+  const data = localStorage.getItem('auth');
+  const user = data ? JSON.parse(data) : null;
+  
   
   // Fetch student schedules
   const { data: horarios, isLoading: horariosLoading, error: horariosError } = useQuery({
     queryKey: ['horarios'],
     queryFn: async () => {
-      const response = await axiosInstance.get('/alumnos/me/horarios');
+      const response = await axiosInstance.post('/alumnos/me/horarios', user);
       return response.data as Horario[];
     }
   });
@@ -62,7 +65,7 @@ const AlumnoDashboard: React.FC = () => {
   const { data: asistencias, isLoading: asistenciasLoading, error: asistenciasError } = useQuery({
     queryKey: ['asistencias'],
     queryFn: async () => {
-      const response = await axiosInstance.get('/alumnos/me/asistencias');
+      const response = await axiosInstance.post('/alumnos/me/asistencias', user);
       return response.data as Asistencia[];
     }
   });

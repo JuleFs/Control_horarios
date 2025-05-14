@@ -76,13 +76,15 @@ interface Asistencia {
 }
 
 const MaestroDashboard: React.FC = () => {
+  const data = localStorage.getItem('auth');
+  const parsedData = data ? JSON.parse(data) : null;
   const { authState } = useAuth();
   
   // Fetch teacher data
   const { data: maestro, isLoading: maestroLoading } = useQuery({
     queryKey: ['maestro', 'profile'],
     queryFn: async () => {
-      const response = await axiosInstance.get('/maestros/me/profile');
+      const response = await axiosInstance.post('/maestros/me/profile', parsedData);
       return response.data as Maestro;
     }
   });
@@ -91,7 +93,7 @@ const MaestroDashboard: React.FC = () => {
   const { data: horarios, isLoading: horariosLoading } = useQuery({
     queryKey: ['maestro', 'horarios'],
     queryFn: async () => {
-      const response = await axiosInstance.get('/maestros/me/horarios');
+      const response = await axiosInstance.post('/maestros/me/horarios', parsedData);
       return response.data as Horario[];
     }
   });
@@ -100,7 +102,7 @@ const MaestroDashboard: React.FC = () => {
   const { data: asistencias, isLoading: asistenciasLoading } = useQuery({
     queryKey: ['maestro', 'asistencias'],
     queryFn: async () => {
-      const response = await axiosInstance.get('/maestros/me/asistencias');
+      const response = await axiosInstance.post('/maestros/me/asistencias', parsedData);
       return response.data as Asistencia[];
     }
   });

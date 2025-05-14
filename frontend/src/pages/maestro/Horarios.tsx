@@ -66,12 +66,13 @@ const TabPanel: React.FC<TabPanelProps> = (props) => {
 
 const MaestroHorarios: React.FC = () => {
   const [selectedDay, setSelectedDay] = useState(new Date().getDay());
-  
+  const data = localStorage.getItem('auth');
+  const parsedData = data ? JSON.parse(data) : null;
   // Fetch teacher schedules
   const { data: horarios, isLoading, error } = useQuery({
     queryKey: ['maestro', 'horarios'],
     queryFn: async () => {
-      const response = await axiosInstance.get('/maestros/me/horarios');
+      const response = await axiosInstance.post('/maestros/me/horarios', parsedData);
       return response.data as Horario[];
     }
   });
