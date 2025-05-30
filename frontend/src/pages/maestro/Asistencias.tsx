@@ -437,7 +437,7 @@ const MaestroAsistencias: React.FC = () => {
                         </TableCell>
                         <TableCell>{asistencia.Horario.Grupo.Nombre}</TableCell>
                         <TableCell>{formatHora(asistencia.Horario.HoraInicio)} - {formatHora(asistencia.Horario.HoraFin)}</TableCell>
-                        <TableCell>{asistencia.Horario.Salon.Nombre}</TableCell>
+                        <TableCell>{asistencia.Horario.Grupo.Nombre}</TableCell>
                         <TableCell align="center">
                           {asistencia.Asistio ? (
                             <Chip

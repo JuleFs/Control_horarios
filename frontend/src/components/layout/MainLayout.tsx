@@ -116,7 +116,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
         <ListItem disablePadding>
           <ListItemButton onClick={logout}>
             <ListItemIcon><LogoutIcon /></ListItemIcon>
-            <ListItemText primary="Logout" />
+            <ListItemText primary="Cerrar sesión" />
           </ListItemButton>
         </ListItem>
       </List>
@@ -144,16 +144,16 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 }}>
-            {authState.user?.userType === UserRole.ADMIN && 'Admin Panel'}
-            {authState.user?.userType === UserRole.ALUMNO && 'Student Portal'}
-            {authState.user?.userType === UserRole.MAESTRO && 'Teacher Portal'}
-            {authState.user?.userType === UserRole.CHECADOR && 'Attendance Management'}
+            {authState.user?.userType === UserRole.ADMIN && 'Panel de administración'}
+            {authState.user?.userType === UserRole.ALUMNO && 'Portal del estudiante'}
+            {authState.user?.userType === UserRole.MAESTRO && 'Portal del maestro'}
+            {authState.user?.userType === UserRole.CHECADOR && 'Portal del checador'}
           </Typography>
           <Typography variant="body1" sx={{ mr: 2 }}>
             {authState.user?.nombre}
           </Typography>
           <Button color="inherit" onClick={logout}>
-            Logout
+            Cerrar sesión
           </Button>
         </Toolbar>
       </AppBar>

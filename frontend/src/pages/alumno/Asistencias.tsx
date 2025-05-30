@@ -104,7 +104,7 @@ const AlumnoAsistencias: React.FC = () => {
   return (
     <MainLayout>
       <Typography variant="h4" gutterBottom>
-        My Attendance
+        Mis Asistencias
       </Typography>
 
       {isLoading ? (
@@ -129,7 +129,7 @@ const AlumnoAsistencias: React.FC = () => {
               <Card sx={{ height: "100%" }}>
                 <CardContent>
                   <Typography variant="h6" gutterBottom>
-                    Total Classes
+                    Total de Clases
                   </Typography>
                   <Typography variant="h4">{totalClasses}</Typography>
                 </CardContent>
@@ -141,7 +141,7 @@ const AlumnoAsistencias: React.FC = () => {
               <Card sx={{ height: "100%" }}>
                 <CardContent>
                   <Typography variant="h6" gutterBottom>
-                    Present
+                    Presentes
                   </Typography>
                   <Typography variant="h4" color="success.main">
                     {presentCount} ({Math.round(attendanceRate)}%)
@@ -155,7 +155,7 @@ const AlumnoAsistencias: React.FC = () => {
               <Card sx={{ height: "100%" }}>
                 <CardContent>
                   <Typography variant="h6" gutterBottom>
-                    Absent
+                    Ausentes
                   </Typography>
                   <Typography variant="h4" color="error.main">
                     {absentCount} ({Math.round(100 - attendanceRate)}%)
@@ -169,16 +169,16 @@ const AlumnoAsistencias: React.FC = () => {
           <Box sx={{ mb: 3 }}>
             <FormControl sx={{ minWidth: 200 }}>
               <InputLabel id="subject-filter-label">
-                Filter by Subject
+                Filtrar por Materia
               </InputLabel>
               <Select
                 labelId="subject-filter-label"
                 id="subject-filter"
                 value={subjectFilter}
-                label="Filter by Subject"
+                label="Filtrar por Materia"
                 onChange={handleFilterChange}
               >
-                <MenuItem value="all">Materias</MenuItem>
+                <MenuItem value="all">Todas las Materias</MenuItem>
                 {subjects.map((subject) => (
                   <MenuItem key={subject} value={subject}>
                     {subject}
@@ -222,14 +222,14 @@ const AlumnoAsistencias: React.FC = () => {
                         {asistencia.Asistio ? (
                           <Chip
                             icon={<CheckCircleIcon />}
-                            label="Present"
+                            label="Presente"
                             color="success"
                             size="small"
                           />
                         ) : (
                           <Chip
                             icon={<CancelIcon />}
-                            label="Absent"
+                            label="Ausente"
                             color="error"
                             size="small"
                           />

@@ -49,7 +49,7 @@ const MisMaterias: React.FC = () => {
   return (
     <MainLayout>
       <Typography variant="h4" gutterBottom>
-        My Subjects
+        Mis Materias
       </Typography>
       
       {isLoading ? (
@@ -57,7 +57,7 @@ const MisMaterias: React.FC = () => {
           <CircularProgress />
         </Box>
       ) : error ? (
-        <Alert severity="error">Error loading subjects</Alert>
+        <Alert severity="error">Error al cargar las materias</Alert>
       ) : (
         <>
           {/* Statistics */}
@@ -71,7 +71,7 @@ const MisMaterias: React.FC = () => {
               <CardContent>
                 <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
                   <SchoolIcon sx={{ mr: 2, color: 'primary.main' }} />
-                  <Typography variant="h6">Total Subjects</Typography>
+                  <Typography variant="h6">Total de Materias</Typography>
                 </Box>
                 <Typography variant="h4">{materias?.length || 0}</Typography>
               </CardContent>
@@ -83,14 +83,14 @@ const MisMaterias: React.FC = () => {
             <Table>
               <TableHead>
                 <TableRow>
-                  <TableCell>Subject Name</TableCell>
+                  <TableCell>Nombre de la Materia</TableCell>
                   <TableCell>
                     <MeetingRoomIcon fontSize="small" sx={{ mr: 1, verticalAlign: 'middle' }} />
-                    Classroom
+                    Salón
                   </TableCell>
                   <TableCell>
                     <PersonIcon fontSize="small" sx={{ mr: 1, verticalAlign: 'middle' }} />
-                    Teacher
+                    Maestro
                   </TableCell>
                 </TableRow>
               </TableHead>
@@ -106,7 +106,7 @@ const MisMaterias: React.FC = () => {
                 ) : (
                   <TableRow>
                     <TableCell colSpan={3} align="center">
-                      No subjects assigned
+                      No hay materias asignadas
                     </TableCell>
                   </TableRow>
                 )}

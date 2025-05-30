@@ -131,7 +131,7 @@ const AlumnoDashboard: React.FC = () => {
                   </Box>
                 </Box>
                 <Typography variant="body2">
-                  Present: {presentCount} / {totalAsistencias} classes
+                  Presente: {presentCount} / {totalAsistencias} clases
                 </Typography>
               </Box>
             </CardContent>
@@ -181,7 +181,7 @@ const AlumnoDashboard: React.FC = () => {
                     {todaySchedule[0].HoraInicio} - {todaySchedule[0].HoraFin}
                   </Typography>
                   <Typography variant="body2" color="text.secondary">
-                    Room: {todaySchedule[0].Salon.Nombre}
+                    Salón: {todaySchedule[0].Salon.Nombre}
                   </Typography>
                 </>
               ) : (
@@ -206,7 +206,7 @@ const AlumnoDashboard: React.FC = () => {
             <CircularProgress />
           </Box>
         ) : horariosError ? (
-          <Alert severity="error">Error loading schedules</Alert>
+          <Alert severity="error">Error al cargar los horarios</Alert>
         ) : todaySchedule.length === 0 ? (
           <Typography variant="body1" sx={{ p: 2 }}>
             Sin Clases Asignadas para hoy
@@ -234,7 +234,7 @@ const AlumnoDashboard: React.FC = () => {
                       Maestro: {horario.Materia.Maestro.Nombre}
                     </Typography>
                     <Typography variant="body2">
-                      Salon: {horario.Salon.Nombre}
+                      Salón: {horario.Salon.Nombre}
                     </Typography>
                   </CardContent>
                 </Card>

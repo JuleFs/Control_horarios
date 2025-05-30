@@ -110,7 +110,7 @@ const AlumnoHorarios: React.FC = () => {
     });
   };
 
-  // Group schedules by day of week
+  // Group schedules by day of week and sort by time
   const groupByDay = () => {
     if (!horarios) return {};
 
@@ -118,12 +118,13 @@ const AlumnoHorarios: React.FC = () => {
       "Domingo",
       "Lunes",
       "Martes",
-      "Miercoles",
+      "Miércoles",
       "Jueves",
       "Viernes",
       "Sábado",
     ];
-    return horarios.reduce((acc, horario) => {
+    
+    const grouped = horarios.reduce((acc, horario) => {
       const dayOfWeek = new Date(horario.Dias).getDay();
       const day = days[dayOfWeek];
 
@@ -134,9 +135,55 @@ const AlumnoHorarios: React.FC = () => {
       acc[day].push(horario);
       return acc;
     }, {} as Record<string, Horario[]>);
+
+    // Sort classes within each day by start time
+    Object.keys(grouped).forEach(day => {
+      grouped[day].sort((a, b) => {
+        const timeA = a.HoraInicio;
+        const timeB = b.HoraInicio;
+        return timeA.localeCompare(timeB);
+      });
+    });
+
+    return grouped;
   };
 
   const scheduleByDay = groupByDay();
+
+  // Get today's day name and reorder days to show today first
+  const getTodayFirst = () => {
+    const days = [
+      "Domingo",
+      "Lunes",
+      "Martes",
+      "Miércoles",
+      "Jueves",
+      "Viernes",
+      "Sábado",
+    ];
+    
+    const today = new Date().getDay();
+    const todayName = days[today];
+    
+    // Create ordered array starting with today
+    const orderedDays: [string, Horario[]][] = [];
+    
+    // First add today if it has classes
+    if (scheduleByDay[todayName]) {
+      orderedDays.push([todayName, scheduleByDay[todayName]]);
+    }
+    
+    // Then add other days that have classes (excluding today)
+    Object.entries(scheduleByDay).forEach(([day, dayHorarios]) => {
+      if (day !== todayName) {
+        orderedDays.push([day, dayHorarios]);
+      }
+    });
+    
+    return orderedDays;
+  };
+
+  const orderedSchedule = getTodayFirst();
 
   // Format time for display (19:30:00 -> 7:30 PM)
   const formatTime = (timeStr: string) => {
@@ -146,6 +193,21 @@ const AlumnoHorarios: React.FC = () => {
     } catch {
       return timeStr;
     }
+  };
+
+  // Check if a day is today
+  const isToday = (dayName: string) => {
+    const days = [
+      "Domingo",
+      "Lunes",
+      "Martes",
+      "Miércoles",
+      "Jueves",
+      "Viernes",
+      "Sábado",
+    ];
+    const today = new Date().getDay();
+    return days[today] === dayName;
   };
 
   return (
@@ -162,10 +224,18 @@ const AlumnoHorarios: React.FC = () => {
         <Alert severity="error">Error al Intentar Cargar los Horarios</Alert>
       ) : (
         <>
-          {Object.entries(scheduleByDay).map(([day, dayHorarios]) => (
+          {orderedSchedule.map(([day, dayHorarios]) => (
             <Box key={day} sx={{ mb: 4 }}>
-              <Typography variant="h5" gutterBottom sx={{ mt: 3 }}>
-                {day}
+              <Typography 
+                variant="h5" 
+                gutterBottom 
+                sx={{ 
+                  mt: 3,
+                  color: isToday(day) ? 'primary.main' : 'inherit',
+                  fontWeight: isToday(day) ? 'bold' : 'normal'
+                }}
+              >
+                {day} {isToday(day) && '(Hoy)'}
               </Typography>
               <TableContainer component={Paper}>
                 <Table>
@@ -174,7 +244,7 @@ const AlumnoHorarios: React.FC = () => {
                       <TableCell>Materia</TableCell>
                       <TableCell>Hora</TableCell>
                       <TableCell>Maestro</TableCell>
-                      <TableCell>Salon</TableCell>
+                      <TableCell>Salón</TableCell>
                       <TableCell>Acciones</TableCell>
                     </TableRow>
                   </TableHead>
@@ -194,10 +264,7 @@ const AlumnoHorarios: React.FC = () => {
                             size="small"
                             onClick={() => handleRegisterAttendance(horario)}
                             // Only enable for today's classes
-                            disabled={
-                              new Date(horario.Dias).getDay() !==
-                              new Date().getDay()
-                            }
+                            disabled={!isToday(day)}
                           >
                             Registrar Asistencia
                           </Button>
@@ -211,16 +278,16 @@ const AlumnoHorarios: React.FC = () => {
           ))}
 
           {/* Check if there are no classes scheduled */}
-          {Object.keys(scheduleByDay).length === 0 && (
-            <Alert severity="info">Aun no tienes clases programadas.</Alert>
+          {orderedSchedule.length === 0 && (
+            <Alert severity="info">Aún no tienes clases programadas.</Alert>
           )}
 
           {/* Attendance Confirmation Dialog */}
           <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
-            <DialogTitle>Confirm Attendance</DialogTitle>
+            <DialogTitle>Confirmar Asistencia</DialogTitle>
             <DialogContent>
               <DialogContentText>
-                Quieres registrar la asistencia para{" "}
+                ¿Quieres registrar la asistencia para{" "}
                 {selectedHorario?.Materia.Nombre}?
               </DialogContentText>
             </DialogContent>
@@ -232,8 +299,8 @@ const AlumnoHorarios: React.FC = () => {
                 disabled={registerAttendanceMutation.isPending}
               >
                 {registerAttendanceMutation.isPending
-                  ? "Registering..."
-                  : "Confirm"}
+                  ? "Registrando..."
+                  : "Confirmar"}
               </Button>
             </DialogActions>
           </Dialog>

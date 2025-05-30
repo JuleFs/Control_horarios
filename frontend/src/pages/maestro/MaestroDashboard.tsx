@@ -407,7 +407,7 @@ const MaestroDashboard: React.FC = () => {
                       <TableCell>
                         {formatTime(asistencia.Horario.HoraInicio)} - {formatTime(asistencia.Horario.HoraFin)}
                       </TableCell>
-                      <TableCell>{asistencia.Horario.Salon.Nombre}</TableCell>
+                      <TableCell>{asistencia.Horario.Grupo.Nombre}</TableCell>
                       <TableCell align="center">
                         {asistencia.Asistio ? (
                           <Chip 

@@ -37,22 +37,15 @@ interface Maestro {
   Nombre: string;
 }
 
-interface Salon {
-  ID_Salon: number;
-  Nombre: string;
-}
-
 interface Materia {
   ID_Materia: number;
   Nombre: string;
   Maestro: Maestro;
-  Salon: Salon;
 }
 
 interface CreateMateriaDto {
   Nombre: string;
   Maestro_ID: number;
-  Salon_ID: number;
 }
 
 const MateriaManagement: React.FC = () => {
@@ -61,8 +54,7 @@ const MateriaManagement: React.FC = () => {
   const [currentMateria, setCurrentMateria] = useState<Materia | null>(null);
   const [formData, setFormData] = useState<CreateMateriaDto>({
     Nombre: '',
-    Maestro_ID: 0,
-    Salon_ID: 0
+    Maestro_ID: 0
   });
   const [snackbar, setSnackbar] = useState({
     open: false,
@@ -87,15 +79,6 @@ const MateriaManagement: React.FC = () => {
     queryFn: async () => {
       const response = await axiosInstance.get('/maestros');
       return response.data as Maestro[];
-    }
-  });
-  
-  // Fetch all classrooms
-  const { data: salones, isLoading: salonesLoading } = useQuery({
-    queryKey: ['salones'],
-    queryFn: async () => {
-      const response = await axiosInstance.get('/salones');
-      return response.data as Salon[];
     }
   });
   
@@ -176,8 +159,7 @@ const MateriaManagement: React.FC = () => {
     setCurrentMateria(null);
     setFormData({
       Nombre: '',
-      Maestro_ID: 0,
-      Salon_ID: 0
+      Maestro_ID: 0
     });
     setOpenDialog(true);
   };
@@ -188,8 +170,7 @@ const MateriaManagement: React.FC = () => {
     setCurrentMateria(materia);
     setFormData({
       Nombre: materia.Nombre,
-      Maestro_ID: materia.Maestro.ID_Maestro,
-      Salon_ID: materia.Salon.ID_Salon
+      Maestro_ID: materia.Maestro.ID_Maestro
     });
     setOpenDialog(true);
   };
@@ -229,10 +210,10 @@ const MateriaManagement: React.FC = () => {
   };
   
   const isFormValid = () => {
-    return formData.Nombre && formData.Maestro_ID > 0 && formData.Salon_ID > 0;
+    return formData.Nombre && formData.Maestro_ID > 0;
   };
   
-  const isLoading = materiasLoading || maestrosLoading || salonesLoading;
+  const isLoading = materiasLoading || maestrosLoading;
   
   return (
     <MainLayout>
@@ -258,14 +239,13 @@ const MateriaManagement: React.FC = () => {
                 <TableCell>ID</TableCell>
                 <TableCell>Nombre</TableCell>
                 <TableCell>Profesor</TableCell>
-                <TableCell>Salón</TableCell>
                 <TableCell>Acciones</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {isLoading ? (
                 <TableRow>
-                  <TableCell colSpan={5} align="center">
+                  <TableCell colSpan={4} align="center">
                     <CircularProgress />
                   </TableCell>
                 </TableRow>
@@ -275,7 +255,6 @@ const MateriaManagement: React.FC = () => {
                     <TableCell>{materia.ID_Materia}</TableCell>
                     <TableCell>{materia.Nombre}</TableCell>
                     <TableCell>{materia.Maestro.Nombre}</TableCell>
-                    <TableCell>{materia.Salon.Nombre}</TableCell>
                     <TableCell>
                       <Tooltip title="Editar">
                         <IconButton onClick={() => handleEditClick(materia)}>
@@ -292,7 +271,7 @@ const MateriaManagement: React.FC = () => {
                 ))
               ) : (
                 <TableRow>
-                  <TableCell colSpan={5} align="center">
+                  <TableCell colSpan={4} align="center">
                     No se encontraron materias
                   </TableCell>
                 </TableRow>
@@ -333,38 +312,19 @@ const MateriaManagement: React.FC = () => {
               />
               
               <FormControl fullWidth>
-                <InputLabel id="maestro-label">Profesor</InputLabel>
+                <InputLabel id="maestro-label">Profesor *</InputLabel>
                 <Select
                   labelId="maestro-label"
                   name="Maestro_ID"
                   value={formData.Maestro_ID}
                   onChange={handleChange as any}
-                  label="Profesor"
+                  label="Profesor *"
                   required
                 >
                   <MenuItem value={0} disabled>Seleccione un profesor</MenuItem>
                   {maestros?.map((maestro) => (
                     <MenuItem key={maestro.ID_Maestro} value={maestro.ID_Maestro}>
                       {maestro.Nombre}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-              
-              <FormControl fullWidth>
-                <InputLabel id="salon-label">Salón</InputLabel>
-                <Select
-                  labelId="salon-label"
-                  name="Salon_ID"
-                  value={formData.Salon_ID}
-                  onChange={handleChange as any}
-                  label="Salón"
-                  required
-                >
-                  <MenuItem value={0} disabled>Seleccione un salón</MenuItem>
-                  {salones?.map((salon) => (
-                    <MenuItem key={salon.ID_Salon} value={salon.ID_Salon}>
-                      {salon.Nombre}
                     </MenuItem>
                   ))}
                 </Select>

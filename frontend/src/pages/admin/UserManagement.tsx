@@ -172,14 +172,14 @@ const UserManagement: React.FC = () => {
       setOpenDialog(false);
       setSnackbar({
         open: true,
-        message: 'User added successfully',
+        message: 'Usuario agregado exitosamente',
         severity: 'success'
       });
     },
     onError: (error: any) => {
       setSnackbar({
         open: true,
-        message: error.response?.data?.message || 'Error adding user',
+        message: error.response?.data?.message || 'Error al agregar usuario',
         severity: 'error'
       });
     }
@@ -195,14 +195,14 @@ const UserManagement: React.FC = () => {
       setOpenDialog(false);
       setSnackbar({
         open: true,
-        message: 'User updated successfully',
+        message: 'Usuario actualizado exitosamente',
         severity: 'success'
       });
     },
     onError: (error: any) => {
       setSnackbar({
         open: true,
-        message: error.response?.data?.message || 'Error updating user',
+        message: error.response?.data?.message || 'Error al actualizar usuario',
         severity: 'error'
       });
     }
@@ -217,14 +217,14 @@ const UserManagement: React.FC = () => {
       setOpenDialog(false);
       setSnackbar({
         open: true,
-        message: 'User deleted successfully',
+        message: 'Usuario eliminado exitosamente',
         severity: 'success'
       });
     },
     onError: (error: any) => {
       setSnackbar({
         open: true,
-        message: error.response?.data?.message || 'Error deleting user',
+        message: error.response?.data?.message || 'Error al eliminar usuario',
         severity: 'error'
       });
     }
@@ -451,9 +451,9 @@ const UserManagement: React.FC = () => {
               <TableHead>
                 <TableRow>
                   <TableCell>ID</TableCell>
-                  <TableCell>Name</TableCell>
-                  <TableCell>Email</TableCell>
-                  <TableCell>Actions</TableCell>
+                  <TableCell>Nombre</TableCell>
+                  <TableCell>Correo</TableCell>
+                  <TableCell>Acciones</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -470,12 +470,12 @@ const UserManagement: React.FC = () => {
                       <TableCell>{admin.Nombre}</TableCell>
                       <TableCell>{admin.Correo}</TableCell>
                       <TableCell>
-                        <Tooltip title="Edit">
+                        <Tooltip title="Editar">
                           <IconButton onClick={() => handleEditClick(admin)}>
                             <EditIcon />
                           </IconButton>
                         </Tooltip>
-                        <Tooltip title="Delete">
+                        <Tooltip title="Eliminar">
                           <IconButton onClick={() => handleDeleteClick(admin)}>
                             <DeleteIcon />
                           </IconButton>
@@ -486,7 +486,7 @@ const UserManagement: React.FC = () => {
                 ) : (
                   <TableRow>
                     <TableCell colSpan={4} align="center">
-                      No administrators found
+                      No se encontraron administradores
                     </TableCell>
                   </TableRow>
                 )}
@@ -502,10 +502,10 @@ const UserManagement: React.FC = () => {
               <TableHead>
                 <TableRow>
                   <TableCell>ID</TableCell>
-                  <TableCell>Name</TableCell>
-                  <TableCell>Email</TableCell>
-                  <TableCell>Subjects</TableCell>
-                  <TableCell>Actions</TableCell>
+                  <TableCell>Nombre</TableCell>
+                  <TableCell>Correo</TableCell>
+                  <TableCell>Materias</TableCell>
+                  <TableCell>Acciones</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -523,12 +523,12 @@ const UserManagement: React.FC = () => {
                       <TableCell>{maestro.Correo}</TableCell>
                       <TableCell>{maestro.materias?.length || 0}</TableCell>
                       <TableCell>
-                        <Tooltip title="Edit">
+                        <Tooltip title="Editar">
                           <IconButton onClick={() => handleEditClick(maestro)}>
                             <EditIcon />
                           </IconButton>
                         </Tooltip>
-                        <Tooltip title="Delete">
+                        <Tooltip title="Eliminar">
                           <IconButton onClick={() => handleDeleteClick(maestro)}>
                             <DeleteIcon />
                           </IconButton>
@@ -539,7 +539,7 @@ const UserManagement: React.FC = () => {
                 ) : (
                   <TableRow>
                     <TableCell colSpan={5} align="center">
-                      No teachers found
+                      No se encontraron maestros
                     </TableCell>
                   </TableRow>
                 )}
@@ -555,10 +555,10 @@ const UserManagement: React.FC = () => {
               <TableHead>
                 <TableRow>
                   <TableCell>ID</TableCell>
-                  <TableCell>Name</TableCell>
-                  <TableCell>Email</TableCell>
-                  <TableCell>Group</TableCell>
-                  <TableCell>Actions</TableCell>
+                  <TableCell>Nombre</TableCell>
+                  <TableCell>Correo</TableCell>
+                  <TableCell>Grupo</TableCell>
+                  <TableCell>Acciones</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -574,14 +574,14 @@ const UserManagement: React.FC = () => {
                       <TableCell>{alumno.ID_Alumno}</TableCell>
                       <TableCell>{alumno.Nombre}</TableCell>
                       <TableCell>{alumno.Correo}</TableCell>
-                      <TableCell>{alumno.Grupo?.Nombre || 'No group'}</TableCell>
+                      <TableCell>{alumno.Grupo?.Nombre || 'Sin grupo'}</TableCell>
                       <TableCell>
-                        <Tooltip title="Edit">
+                        <Tooltip title="Editar">
                           <IconButton onClick={() => handleEditClick(alumno)}>
                             <EditIcon />
                           </IconButton>
                         </Tooltip>
-                        <Tooltip title="Delete">
+                        <Tooltip title="Eliminar">
                           <IconButton onClick={() => handleDeleteClick(alumno)}>
                             <DeleteIcon />
                           </IconButton>
@@ -592,7 +592,7 @@ const UserManagement: React.FC = () => {
                 ) : (
                   <TableRow>
                     <TableCell colSpan={5} align="center">
-                      No students found
+                      No se encontraron estudiantes
                     </TableCell>
                   </TableRow>
                 )}
@@ -608,8 +608,8 @@ const UserManagement: React.FC = () => {
               <TableHead>
                 <TableRow>
                   <TableCell>ID</TableCell>
-                  <TableCell>Email</TableCell>
-                  <TableCell>Actions</TableCell>
+                  <TableCell>Correo</TableCell>
+                  <TableCell>Acciones</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -625,12 +625,12 @@ const UserManagement: React.FC = () => {
                       <TableCell>{checador.ID}</TableCell>
                       <TableCell>{checador.Correo}</TableCell>
                       <TableCell>
-                        <Tooltip title="Edit">
+                        <Tooltip title="Editar">
                           <IconButton onClick={() => handleEditClick(checador)}>
                             <EditIcon />
                           </IconButton>
                         </Tooltip>
-                        <Tooltip title="Delete">
+                        <Tooltip title="Eliminar">
                           <IconButton onClick={() => handleDeleteClick(checador)}>
                             <DeleteIcon />
                           </IconButton>
@@ -641,7 +641,7 @@ const UserManagement: React.FC = () => {
                 ) : (
                   <TableRow>
                     <TableCell colSpan={3} align="center">
-                      No attendance checkers found
+                      No se encontraron checadores de asistencia
                     </TableCell>
                   </TableRow>
                 )}
@@ -654,14 +654,14 @@ const UserManagement: React.FC = () => {
       {/* Dialog for Add/Edit/Delete */}
       <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
         <DialogTitle>
-          {dialogType === 'add' && 'Add New User'}
-          {dialogType === 'edit' && 'Edit User'}
-          {dialogType === 'delete' && 'Delete User'}
+          {dialogType === 'add' && 'Agregar Nuevo Usuario'}
+          {dialogType === 'edit' && 'Editar Usuario'}
+          {dialogType === 'delete' && 'Eliminar Usuario'}
         </DialogTitle>
         <DialogContent>
           {dialogType === 'delete' ? (
             <DialogContentText>
-              Are you sure you want to delete this user? This action cannot be undone.
+              ¿Estás seguro de que quieres eliminar este usuario? Esta acción no se puede deshacer.
             </DialogContentText>
           ) : (
             <>
@@ -671,7 +671,7 @@ const UserManagement: React.FC = () => {
                   autoFocus
                   margin="dense"
                   name="Nombre"
-                  label="Name"
+                  label="Nombre"
                   type="text"
                   fullWidth
                   value={formData.Nombre}
@@ -683,7 +683,7 @@ const UserManagement: React.FC = () => {
               <TextField
                 margin="dense"
                 name="Correo"
-                label="Email"
+                label="Correo"
                 type="email"
                 fullWidth
                 value={formData.Correo}
@@ -694,7 +694,7 @@ const UserManagement: React.FC = () => {
               <TextField
                 margin="dense"
                 name="Contraseña"
-                label={dialogType === 'edit' ? "New Password (leave empty to keep current)" : "Password"}
+                label={dialogType === 'edit' ? "Nueva Contraseña (dejar vacío para mantener la actual)" : "Contraseña"}
                 type="password"
                 fullWidth
                 value={formData.Contraseña}
@@ -705,13 +705,13 @@ const UserManagement: React.FC = () => {
               {/* Show Group selection for Students */}
               {tabValue === 2 && (
                 <FormControl fullWidth margin="dense">
-                  <InputLabel id="grupo-label">Group</InputLabel>
+                  <InputLabel id="grupo-label">Grupo</InputLabel>
                   <Select
                     labelId="grupo-label"
                     name="Grupo_ID"
                     value={formData.Grupo_ID}
                     onChange={handleChange}
-                    label="Group"
+                    label="Grupo"
                     required
                   >
                     {grupos?.map((grupo) => (
@@ -726,7 +726,7 @@ const UserManagement: React.FC = () => {
           )}
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setOpenDialog(false)}>Cancel</Button>
+          <Button onClick={() => setOpenDialog(false)}>Cancelar</Button>
           <Button 
             onClick={handleSubmit} 
             variant="contained" 
@@ -737,9 +737,9 @@ const UserManagement: React.FC = () => {
               deleteMutation.isPending
             }
           >
-            {dialogType === 'add' && (addMutation.isPending ? 'Adding...' : 'Add')}
-            {dialogType === 'edit' && (updateMutation.isPending ? 'Saving...' : 'Save')}
-            {dialogType === 'delete' && (deleteMutation.isPending ? 'Deleting...' : 'Delete')}
+            {dialogType === 'add' && (addMutation.isPending ? 'Agregando...' : 'Agregar')}
+            {dialogType === 'edit' && (updateMutation.isPending ? 'Guardando...' : 'Guardar')}
+            {dialogType === 'delete' && (deleteMutation.isPending ? 'Eliminando...' : 'Eliminar')}
           </Button>
         </DialogActions>
       </Dialog>

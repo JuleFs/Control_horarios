@@ -204,9 +204,9 @@ const WeeklyScheduleSelector: React.FC<WeeklyScheduleSelectorProps> = ({
 
     setHorariosAgregados([...horariosAgregados, ...nuevosHorarios]);
 
-    // Limpiar el formulario
+    // Limpiar el formulario manteniendo el grupo seleccionado
     setFormData({
-      Grupo_ID: "",
+      Grupo_ID: formData.Grupo_ID, // Mantener el grupo seleccionado
       Materia_ID: "",
       Salon_ID: "",
       HoraInicio: null,
@@ -407,13 +407,13 @@ const WeeklyScheduleSelector: React.FC<WeeklyScheduleSelectorProps> = ({
             <Table>
               <TableHead>
                 <TableRow>
-                  <TableCell>Sábado</TableCell>
                   <TableCell>Domingo</TableCell>
                   <TableCell>Lunes</TableCell>
                   <TableCell>Martes</TableCell>
                   <TableCell>Miércoles</TableCell>
                   <TableCell>Jueves</TableCell>
                   <TableCell>Viernes</TableCell>
+                  <TableCell>Sábado</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
