@@ -16,6 +16,7 @@
     "@types/jwt-decode": "^2.2.1",
     "axios": "^1.8.4",
     "date-fns": "^4.1.0",
+    "dotenv": "^16.5.0",
     "formik": "^2.4.6",
     "jwt-decode": "^4.0.0",
     "react": "^19.1.0",
@@ -50,8 +51,9 @@
     ]
   },
   "devDependencies": {
-    "@types/node": "^22.14.0",
+    "@types/node": "^22.15.29",
     "@types/react": "^19.1.0",
-    "@types/yup": "^0.29.14"
+    "@types/yup": "^0.29.14",
+    "process": "^0.11.10"
   }
 }
